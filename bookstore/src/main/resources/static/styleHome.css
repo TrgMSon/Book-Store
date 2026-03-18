@@ -1,0 +1,133 @@
+body {
+    margin: 0;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.top-taskbar {
+    display: flex;
+    width: 100%;
+    border-bottom: 1px solid black;
+    padding-bottom: 10px;
+    padding-top: 20px;
+    position: relative;
+}
+
+.top-taskbar p {
+    width: 100px;
+    margin: 20px;
+}
+
+.main-view {
+    display: flex;
+    height: 80%;
+    flex: 1;
+    margin-top: 40px;
+}
+
+#searchInput {
+    margin-left: 50%;
+}
+
+#logoutBtn, #cartBtn {
+    margin-left: 5%;
+    border: none;
+    background-color: white;
+    cursor: pointer;
+}
+
+#logoutBtn:hover, #cartBtn:hover {
+    background-color: #A9A9A9;
+}
+
+#goHomeBtn {
+    font-size: 30px;
+    width: auto;
+    border: none;
+    background-color: white;
+    cursor: pointer;
+    padding-left: 10px;
+}
+
+.sidebar {
+    width: 300px;
+    border: 1px solid black;
+    height: fit-content;
+    margin-right: 10px;
+    margin-left: 10px;
+    border-radius: 4px;
+    padding: 20px;
+}
+
+.sidebar p {
+    padding: 20px;
+    border-bottom: 1px solid black;
+    cursor: pointer;
+}
+
+.sidebar p:hover {
+    background-color: #A9A9A9;
+}
+
+.main-view2 {
+    flex: 1;
+    height: fit-content;
+    border: 1px solid black;
+    border-radius: 4px;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.viewBook {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid black;
+    padding: 10px;
+    width: 150px;
+    height: 300px;
+}
+
+.viewBook img {
+    flex: 1;
+}
+
+.viewBook p {
+    font-weight: bold;
+    font-size: 16px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.viewCart {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    left: 500px;
+    top: 100px;
+    background-color: white;
+    min-width: 400px;
+    min-height: 400px;
+    width: fit-content;
+    height: fit-content;
+    border: 1px solid black;
+}
+
+.hide {
+    display: none;
+}
+
+.item {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: auto;
+    overflow-y: scroll;
+}
