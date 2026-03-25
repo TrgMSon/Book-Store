@@ -130,4 +130,45 @@ body {
     flex: 1;
     overflow: auto;
     overflow-y: scroll;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+.itemsDiv {
+    display: flex;
+    width: 90%;
+}
+
+.itemsDiv:hover {
+    background-color: #A9A9A9;
+}
+
+.bookNameElement {
+    flex: 1;
+    margin-right: 4px;
+}
+
+.qtyItemInput {
+    width: 10%;
+    height: fit-content;
+    align-self: center;
+    margin-left: 20px;
+}
+
+#payBtn, #updateCart {
+    width: fit-content;
+    align-self: center;
+    margin-left: 10px;
+}
+
+#btnDiv {
+    display: flex;
+    justify-content: center;
+}
+
+.delItemBtn {
+    height: fit-content;
+    margin-left: 10px;
+    justify-self: right;
+    align-self: center;
 }

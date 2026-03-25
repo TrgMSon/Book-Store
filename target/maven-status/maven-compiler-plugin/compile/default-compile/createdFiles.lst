@@ -1,5 +1,0 @@
-com\example\bookstore\model\User.class
-com\example\bookstore\service\UserService.class
-com\example\bookstore\repository\UserRepo.class
-com\example\bookstore\controller\MainController.class
-com\example\bookstore\BookstoreApplication.class

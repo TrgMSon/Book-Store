@@ -40,8 +40,8 @@ public class MainController {
 
         User result = userService.findUserByEmail(email, password);
 
-        if (result.getEmail() != null) {
-            session.setAttribute("userId", user.getUserId() + "");
+        if (result != null) {
+            session.setAttribute("userId", result.getUserId() + "");
             return "redirect:/home";
         }
         else {
@@ -58,12 +58,13 @@ public class MainController {
     @PostMapping("/signup")
     public String doSignup(@ModelAttribute User user, RedirectAttributes ra) {
         User tmp = userService.findUserByEmail(user.getEmail(), user.getPassword());
-        if (tmp.getEmail() != null) {
-            ra.addAttribute("message", "Đăng ký thành công");
+        if (tmp == null) {
+            ra.addFlashAttribute("message", "Đăng ký thành công");
+            userService.saveUser(user);
             return "redirect:/login";
         }
         else {
-            ra.addAttribute("error", "Tài khoản đã tồn tại");
+            ra.addFlashAttribute("error", "Tài khoản đã tồn tại");
             return "redirect:/signup";
         }
     }
@@ -76,12 +77,9 @@ public class MainController {
             return "redirect:/login";
         }
         
-        // userService.deleteCart(userId);
-        
         ArrayList<Book> books = bookService.getAllBook("IT");
         model.addAttribute("books", books);
 
-        //userService.createdCart(userId, LocalDateTime.now());
         return "home";
     }
 

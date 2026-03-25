@@ -22,4 +22,8 @@ public class BookService {
     public Book findBookById(int id) {
         return bookRepo.findBookById(id);
     }
+
+    public boolean isInStock(int bookId, int cartQty) {
+        return cartQty <= bookRepo.findQty(bookId);
+    }
 }
