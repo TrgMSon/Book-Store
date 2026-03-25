@@ -40,4 +40,7 @@ public class Book {
 
     @Column(name="url_img", nullable=false)
     private String urlImg;
+
+    @Column(nullable=false)
+    private String type;
 }

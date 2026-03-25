@@ -1,6 +1,6 @@
 package com.example.bookstore.repository;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -10,12 +10,10 @@ import com.example.bookstore.model.Book;
 
 @Repository
 public interface BookRepo extends JpaRepository<Book, Integer> {
-    @Query(value="SELECT * FROM book WHERE type=?1", nativeQuery = true)
-    ArrayList<Book> findAllBookType(String type);
+    List<Book> findAllByOrderByBookIdAsc();
 
-    @Query(value = "SELECT * FROM book WHERE book_id = ?1", nativeQuery = true)
-    Book findBookById(int bookId);
+    List<Book> findByTypeIgnoreCaseOrderByBookIdAsc(String type);
 
-    @Query(value = "SELECT quantity FROM book WHERE book_id = ?1", nativeQuery = true)
-    int findQty(int bookId);
+    @Query("SELECT b.quantity FROM Book b WHERE b.bookId = ?1")
+    Integer findQty(int bookId);
 }
