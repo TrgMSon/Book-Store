@@ -13,22 +13,25 @@ public class CloudinaryConfig {
 
     @Bean
     public Cloudinary cloudinary() {
-        Dotenv dotenv = Dotenv.configure().directory("./").ignoreIfMissing().load();;
+        // Load dotenv nhưng không bắt buộc phải có file
+        Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
 
-        String cloudName = dotenv.get("CLOUDINARY_NAME");
-        String apiKey = dotenv.get("CLOUDINARY_API_KEY");
-        String apiSecret = dotenv.get("CLOUDINARY_API_SECRET");
+        // CÁCH LẤY BIẾN THÔNG MINH: 
+        // Thử lấy từ System Environment (Render/Railway) trước, nếu không có mới lấy từ .env (Local)
+        String cloudName = System.getenv("CLOUDINARY_NAME");
+        if (cloudName == null) cloudName = dotenv.get("CLOUDINARY_NAME");
 
-        System.out.println("--- CLOUDINARY CONFIG CHECK ---");
-        System.out.println("Name: " + cloudName);
-        System.out.println("Key: " + apiKey);
-        System.out.println("-------------------------------");
+        String apiKey = System.getenv("CLOUDINARY_API_KEY");
+        if (apiKey == null) apiKey = dotenv.get("CLOUDINARY_API_KEY");
 
-        // Debug thử xem có ra "null" không
+        String apiSecret = System.getenv("CLOUDINARY_API_SECRET");
+        if (apiSecret == null) apiSecret = dotenv.get("CLOUDINARY_API_SECRET");
+
+        // Debug (Chỉ nên dùng khi dev, xóa khi deploy thật để bảo mật)
         System.out.println("Cloud Name: " + cloudName);
 
         if (cloudName == null || apiKey == null || apiSecret == null) {
-            throw new RuntimeException("Không tìm thấy cấu hình Cloudinary trong file .env!");
+            throw new RuntimeException("Cấu hình Cloudinary bị thiếu! Hãy kiểm tra Environment Variables hoặc file .env");
         }
 
         return new Cloudinary(ObjectUtils.asMap(
