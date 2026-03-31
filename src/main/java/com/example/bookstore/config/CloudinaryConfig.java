@@ -13,7 +13,7 @@ public class CloudinaryConfig {
 
     @Bean
     public Cloudinary cloudinary() {
-        Dotenv dotenv = Dotenv.configure().directory("./").load();;
+        Dotenv dotenv = Dotenv.configure().directory("./").ignoreIfMissing().load();;
 
         String cloudName = dotenv.get("CLOUDINARY_NAME");
         String apiKey = dotenv.get("CLOUDINARY_API_KEY");
