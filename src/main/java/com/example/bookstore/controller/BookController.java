@@ -54,18 +54,6 @@ public class BookController {
 
     @PostMapping("/upload-image")
     public String uploadImage(@RequestParam("image") MultipartFile file) throws IOException {
-        // String fileName = file.getOriginalFilename();
-        // Path uploadDir = Paths.get("uploads");
-
-        // if (!Files.exists(uploadDir)) {
-        //     Files.createDirectories(uploadDir);
-        // }
-
-        // Path path = uploadDir.resolve(fileName);
-
-        // Files.copy(file.getInputStream(), path);
-
-        // return "/uploads/" + fileName;
         Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
         return uploadResult.get("url").toString();
     }
