@@ -1,0 +1,54 @@
+.main-view-detail-book {
+    display: flex;
+    flex: 1;
+    padding: 10px;
+    height: 80%;
+    padding-top: 25px;
+}
+
+.view-img {
+    height: 80%;
+    width: 20%;
+    margin-left: 90px;
+}
+
+.content-book {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    margin-left: 200px;
+    overflow: visible;
+    font-size: 22px;
+}
+
+.content-book p {
+    white-space: pre-line;
+}
+
+#line {
+    width: 100%;
+    border: 1px solid black;
+}
+
+#goBackBtn {
+    width: 15%;
+    align-self: center;
+    margin-bottom: 20px;
+}
+
+#priceDiv {
+    display: flex;
+    font-size: 28px;
+    margin-top: 70px;
+    align-items: center;
+}
+
+#price {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+#descElement {
+    overflow: auto;
+    overflow-y: scroll;
+}

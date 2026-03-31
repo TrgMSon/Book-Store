@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Quản lý Book Store</title>
+    <link rel="stylesheet" th:href="@{/styleManage.css}">
+</head>
+
+<body>
+    <div class="main">
+        <div class="top-taskbar">
+            <button id="goHomeBtn">Quản lý Book Store</button>
+            <form id="searchForm">
+                <input type="text" placeholder="Tìm kiếm" id="searchInput">
+            </form>
+            <button id="logoutBtn" class="btn">Đăng xuất</button>
+        </div>
+
+        <div class="main-view">
+            <div class="sidebar">
+                <p id="manageBookBtn">Quản lý đầu sách</p>
+                <p id="manageInvoiceBtn">Quản lý hóa đơn</p>
+            </div>
+
+            <div class="main-view2">
+                <div class="optionBtn">
+                    <button id="addBtn" class="btn">Thêm</button>
+                </div>
+                
+                <ul class="listItem"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{scriptManage.js}"></script>
+</body>
+
+</html>
