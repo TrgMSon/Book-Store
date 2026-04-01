@@ -1,9 +1,6 @@
 package com.example.bookstore.controller;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -61,5 +58,10 @@ public class BookController {
     @PostMapping("/addBook")
     public void addBook(@RequestBody BookDTO3 book) {
         bookService.addBook(book);
+    }
+
+    @GetMapping("/searchBook")
+    public ArrayList<Book> searchBook(@RequestParam String type, @RequestParam String name) {
+        return bookService.searchBook(type, name);
     }
 }

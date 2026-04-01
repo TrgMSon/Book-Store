@@ -15,6 +15,7 @@ const updateCart = document.getElementById("updateCart");
 const payBtn = document.getElementById("payBtn");
 
 let cartId = null;
+let bookType = "IT";
 
 itBooks.style.backgroundColor = "#A9A9A9";
 comicBooks.style.backgroundColor = "";
@@ -53,6 +54,8 @@ function addBookToUI(book) {
 }
 
 itBooks.addEventListener("click", async function () {
+    bookType = "IT";
+
     itBooks.style.backgroundColor = "#A9A9A9";
     novels.style.backgroundColor = "";
     comicBooks.style.backgroundColor = "";
@@ -70,6 +73,8 @@ itBooks.addEventListener("click", async function () {
 });
 
 novels.addEventListener("click", async function () {
+    bookType = "Novel";
+
     itBooks.style.backgroundColor = "";
     novels.style.backgroundColor = "#A9A9A9";
     comicBooks.style.backgroundColor = "";
@@ -87,6 +92,8 @@ novels.addEventListener("click", async function () {
 });
 
 comicBooks.addEventListener("click", async function () {
+    bookType = "comic";
+
     itBooks.style.backgroundColor = "";
     novels.style.backgroundColor = "";
     comicBooks.style.backgroundColor = "#A9A9A9";
@@ -104,6 +111,8 @@ comicBooks.addEventListener("click", async function () {
 });
 
 scienceBooks.addEventListener("click", async function () {
+    bookType = "Science";
+
     itBooks.style.backgroundColor = "";
     novels.style.backgroundColor = "";
     comicBooks.style.backgroundColor = "";
@@ -121,6 +130,8 @@ scienceBooks.addEventListener("click", async function () {
 });
 
 literatureBooks.addEventListener("click", async function () {
+    bookType = "literature";
+
     itBooks.style.backgroundColor = "";
     novels.style.backgroundColor = "";
     comicBooks.style.backgroundColor = "";

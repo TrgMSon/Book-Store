@@ -46,4 +46,8 @@ public class BookService {
         int qty = Integer.parseInt(book.getQuantity());
         bookRepo.addBook(book.getName(), book.getDescription(), book.getAuthor(), book.getPublish(), price, qty, book.getUrlImg(), book.getType());
     }
+
+    public ArrayList<Book> searchBook(String type, String name) {
+        return bookRepo.findBookByName(type, "%" + name + "%");
+    }
 }

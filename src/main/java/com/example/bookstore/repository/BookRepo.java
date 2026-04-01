@@ -20,6 +20,9 @@ public interface BookRepo extends JpaRepository<Book, Integer> {
     @Query(value = "SELECT * FROM book WHERE book_id = ?1", nativeQuery = true)
     Book findBookById(int bookId);
 
+    @Query(value = "SELECT * FROM book WHERE type=?1 AND name LIKE ?2", nativeQuery = true)
+    ArrayList<Book> findBookByName(String type, String name);
+
     @Query(value = "SELECT quantity FROM book WHERE book_id = ?1", nativeQuery = true)
     int findQty(int bookId);
 

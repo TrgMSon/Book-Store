@@ -26,12 +26,12 @@ public class MainController {
     @Autowired
     private BookService bookService;
 
-    @GetMapping("/login")
+    @GetMapping(value = {"/login", "/"})
     public String showLogin() {
         return "login";
     }
 
-    @PostMapping("/login")
+    @PostMapping(value = {"/login", "/"})
     public String checkLogin(@ModelAttribute User user, RedirectAttributes ra, HttpSession session) {
         String email = user.getEmail().trim();
         String password = user.getPassword();

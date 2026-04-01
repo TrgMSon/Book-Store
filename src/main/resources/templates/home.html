@@ -8,7 +8,9 @@
         <div class="main">
             <div class="top-taskbar">
                 <button id="goHomeBtn">Book Store</button>
-                <input type="text" placeholder="Tìm kiếm" id="searchInput">
+                <form id="searchForm">
+                    <input type="text" placeholder="Tìm kiếm" id="searchInput">
+                </form>
                 <button id="logoutBtn">Đăng xuất</button>
                 <button id="cartBtn">Giỏ hàng</button>
             </div>
@@ -44,5 +46,6 @@
         </div>
 
         <script th:src="@{/scriptHome.js}"></script>
+        <script th:src="@{/scriptModul.js}"></script>
     </body>
 </html>
