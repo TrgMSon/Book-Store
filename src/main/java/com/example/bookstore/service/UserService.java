@@ -51,7 +51,7 @@ public class UserService {
     }
 
     public void saveUser(User user) {
-        userRepo.save(user.getEmail(), user.getName(), user.getPassword());
+        userRepo.save(user.getEmail(), user.getName(), user.getPassword(), "user");
     }
 
     public boolean isItemExist(int cartId, int bookId) {
