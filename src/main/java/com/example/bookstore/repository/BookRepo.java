@@ -21,7 +21,10 @@ public interface BookRepo extends JpaRepository<Book, Integer> {
     Book findBookById(int bookId);
 
     @Query(value = "SELECT * FROM book WHERE type=?1 AND name LIKE ?2", nativeQuery = true)
-    ArrayList<Book> findBookByName(String type, String name);
+    ArrayList<Book> findBookByNameAndType(String type, String name);
+
+    @Query(value = "SELECT * FROM book WHERE name LIKE ?1", nativeQuery = true)
+    ArrayList<Book> findBookByName(String name);
 
     @Query(value = "SELECT quantity FROM book WHERE book_id = ?1", nativeQuery = true)
     int findQty(int bookId);
@@ -43,4 +46,9 @@ public interface BookRepo extends JpaRepository<Book, Integer> {
     @Modifying
     @Query(value = "INSERT INTO book(name, description, author, publish, price, quantity, url_img, type) VALUES(?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)", nativeQuery = true)
     void addBook(String name, String description, String author, String publish, BigDecimal price, int quantity, String urlImg, String type);
+
+    @Transactional
+    @Modifying
+    @Query(value = "DELETE FROM book WHERE book_id=?1", nativeQuery = true)
+    void deleteBook(int bookId);
 }

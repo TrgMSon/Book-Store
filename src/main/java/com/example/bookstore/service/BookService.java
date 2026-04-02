@@ -47,7 +47,15 @@ public class BookService {
         bookRepo.addBook(book.getName(), book.getDescription(), book.getAuthor(), book.getPublish(), price, qty, book.getUrlImg(), book.getType());
     }
 
-    public ArrayList<Book> searchBook(String type, String name) {
-        return bookRepo.findBookByName(type, "%" + name + "%");
+    public ArrayList<Book> searchBookType(String type, String name) {
+        return bookRepo.findBookByNameAndType(type, "%" + name + "%");
+    }
+
+    public ArrayList<Book> searchBookManage(String name) {
+        return bookRepo.findBookByName("%" + name + "%");
+    }
+
+    public void deleteBook(int bookId) {
+        bookRepo.deleteBook(bookId);
     }
 }

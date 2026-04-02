@@ -17,6 +17,7 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.example.bookstore.dto.BookDTO2;
 import com.example.bookstore.dto.BookDTO3;
+import com.example.bookstore.dto.BookDTO4;
 import com.example.bookstore.model.Book;
 import com.example.bookstore.service.BookService;
 
@@ -61,7 +62,17 @@ public class BookController {
     }
 
     @GetMapping("/searchBook")
-    public ArrayList<Book> searchBook(@RequestParam String type, @RequestParam String name) {
-        return bookService.searchBook(type, name);
+    public ArrayList<Book> searchBookType(@RequestParam String type, @RequestParam String name) {
+        return bookService.searchBookType(type, name);
     }
+
+    @GetMapping("/searchBookManage")
+    public ArrayList<Book> searchBookManage( @RequestParam String name) {
+        return bookService.searchBookManage(name);
+    }
+
+    @PostMapping("/deleteBook")
+    public void deleteBook(@RequestBody BookDTO4 bookDTO4) {
+        bookService.deleteBook(bookDTO4.getBookId());
+    } 
 }

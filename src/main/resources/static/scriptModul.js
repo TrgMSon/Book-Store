@@ -14,10 +14,16 @@ searchForm.addEventListener("submit", async function (e) {
 
     if (target === "") return;
 
-    mainView.innerHTML = "";
-
     let response = await fetch("/api/book/searchBook?type=" + bookType + "&name=" + target);
     let books = await response.json();
+
+    if (books.length === 0) {
+        alert("Không có kết quả phù hợp")
+        return;
+    }
+
+    mainView.innerHTML = "";
+
     for (let i = 0; i < books.length; i++) {
         console.log(books[i]);
         addBookToUI(books[i]);

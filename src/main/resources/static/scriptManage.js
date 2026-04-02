@@ -3,23 +3,38 @@ const manageBookBtn = document.getElementById("manageBookBtn");
 const listItem = document.querySelector(".listItem");
 const mainView = document.querySelector(".main-view");
 const addBtn = document.getElementById("addBtn");
+
+let isLoading = false;
+let hasMore = true;
 let pageIndex = 0;
 
 logoutBtn.addEventListener("click", function () {
     window.location.href = "/logout";
 });
 
-async function loadFirstBook() {
+async function loadBook() {
+    if (isLoading || !hasMore) return;
+
+    isLoading = true;
+
     let res = await fetch("/api/book/pagingBook?index=" + pageIndex);
     let books = await res.json();
+
+    if (books.length === 0) {
+        hasMore = false;
+        return;
+    }
 
     for (let book of books) {
         addBookToUI(book);
     }
+
+    isLoading = false;
+    pageIndex++;
 }
 
 manageBookBtn.style.backgroundColor = "#A9A9A9";
-loadFirstBook();
+loadBook();
 
 function formatTotal(total) {
     let ans = "";
@@ -73,6 +88,11 @@ async function loadDetailBook(bookItem) {
     editBtn.innerText = "Sửa";
     editBtn.dataset.bookId = bookInfor.bookId;
 
+    let delBtn = document.createElement("button");
+    delBtn.classList.add("delBtn");
+    delBtn.innerText = "Xóa";
+    delBtn.dataset.bookId = bookInfor.bookId;
+
     inforDiv.appendChild(bookName);
     inforDiv.appendChild(author);
     inforDiv.appendChild(publish);
@@ -82,6 +102,7 @@ async function loadDetailBook(bookItem) {
     inforDiv.appendChild(price);
     inforDiv.appendChild(closeBtn);
     inforDiv.appendChild(editBtn);
+    inforDiv.appendChild(delBtn);
 
     mainView.appendChild(inforDiv);
 }
@@ -170,7 +191,7 @@ function loadAddBookForm() {
 }
 
 addBtn.addEventListener("click", function () {
-    loadAddBookForm();
+    if (document.querySelector(".book-infor-div") === null) loadAddBookForm();
 });
 
 function addBookToUI(book) {
@@ -190,30 +211,18 @@ function addBookToUI(book) {
     listItem.appendChild(liElement);
 
     liElement.addEventListener("click", function () {
-        loadDetailBook(liElement);
+        if (document.querySelector(".book-infor-div") === null) loadDetailBook(liElement); //load 1 form khi bấm
     });
 }
 
 manageBookBtn.addEventListener("click", async function () {
     pageIndex = 0;
-    let res = await fetch("/api/book/pagingBook?index=" + pageIndex);
-    let books = await res.json();
-
-    listItem.innerHTML = "";
-    for (let book of books) {
-        addBookToUI(book);
-    }
+    await loadBook();
 });
 
 listItem.addEventListener("scroll", async function () {
     if (listItem.scrollTop + listItem.clientHeight >= listItem.scrollHeight - 20) {
-        pageIndex++;
-        let res = await fetch("/api/book/pagingBook?index=" + pageIndex);
-        let books = await res.json();
-
-        for (let book of books) {
-            addBookToUI(book);
-        }
+        await loadBook();
     }
 });
 
@@ -334,5 +343,21 @@ mainView.addEventListener("click", async function (e) {
         }
 
         else imgInput.focus();
+    }
+
+    else if (e.target.classList.contains("delBtn")) {
+        await fetch("/api/book/deleteBook", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                bookId: e.target.dataset.bookId
+            })
+        });
+
+        alert("Xóa đầu sách thành công");
+
+        window.location.href = "/manage";
     }
 });

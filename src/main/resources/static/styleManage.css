@@ -91,7 +91,7 @@ body {
     padding-right: 20px;
 }
 
-.editBtn, .acptBtn, .closeBtn {
+.editBtn, .acptBtn, .closeBtn, .delBtn {
     margin-top: 10px;
     width: 40%;
     align-self: center;
@@ -137,4 +137,15 @@ body {
 
 .hide {
     display: none;
+}
+
+#searchFormManage {
+    margin-left: 40%;
+    margin-right: 40px;
+}
+
+#searchInputManage {
+    height: 55%;
+    width: 300px;
+    font-size: 16px;
 }
