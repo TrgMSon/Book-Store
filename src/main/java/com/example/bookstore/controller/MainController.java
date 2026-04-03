@@ -2,6 +2,7 @@ package com.example.bookstore.controller;
 
 import java.util.ArrayList;
 
+import org.apache.el.stream.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -81,6 +82,9 @@ public class MainController {
         ArrayList<Book> books = bookService.getAllBook("IT");
         model.addAttribute("books", books);
 
+        User user = userService.findUserById(Integer.parseInt(userId));
+        model.addAttribute("userName", user.getName());
+
         return "home";
     }
 
@@ -98,12 +102,15 @@ public class MainController {
     }
 
     @GetMapping("/manage")
-    public String manage(HttpSession session) {
+    public String manage(HttpSession session, Model model) {
         String userId = (String) session.getAttribute("userId");
 
         if (userId == null) {
             return "redirect:/login";
         }
+
+        User user = userService.findUserById(Integer.parseInt(userId));
+        model.addAttribute("userName", user.getName());
 
         return "manage";
     }
