@@ -244,6 +244,8 @@ manageBookBtn.addEventListener("click", async function () {
     viewingBook = true;
     viewingInvoice = false;
 
+    listItem.innerHTML = "";
+
     manageBookBtn.style.backgroundColor = "#A9A9A9";
     manageInvoiceBtn.style.backgroundColor = "";
 
