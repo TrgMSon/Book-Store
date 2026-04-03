@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.bookstore.model.Invoice;
+import com.example.bookstore.dto.InvoiceDTO;
+import com.example.bookstore.dto.InvoiceDTO2;
 import com.example.bookstore.service.InvoiceService;
 
 @RestController
@@ -17,7 +19,12 @@ public class InvoiceController {
     private InvoiceService invoiceService;
 
     @GetMapping("/getAllInvoice")
-    public ArrayList<Invoice> getAllInvoice() {
+    public ArrayList<InvoiceDTO> getAllInvoice() {
         return invoiceService.findAllInvoice();
+    }
+
+    @GetMapping("/viewInvoiceDetail")
+    public InvoiceDTO2 viewInvoiceDetail(@RequestParam int invoiceId) {
+        return invoiceService.findInvoiceDetail(invoiceId);
     }
 }

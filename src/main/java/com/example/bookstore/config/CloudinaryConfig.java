@@ -28,7 +28,6 @@ public class CloudinaryConfig {
         if (apiSecret == null) apiSecret = dotenv.get("CLOUDINARY_API_SECRET");
 
         // Debug (Chỉ nên dùng khi dev, xóa khi deploy thật để bảo mật)
-        System.out.println("Cloud Name: " + cloudName);
 
         if (cloudName == null || apiKey == null || apiSecret == null) {
             throw new RuntimeException("Cấu hình Cloudinary bị thiếu! Hãy kiểm tra Environment Variables hoặc file .env");

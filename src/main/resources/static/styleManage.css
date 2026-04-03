@@ -105,22 +105,22 @@ body {
     overflow-y: scroll;
 }
 
-.book-item {
+.item {
     display: flex;
     border: 1px solid black;
     margin: 5px;
     cursor: pointer;
 }
 
-.book-item:hover {
+.item:hover {
     background-color: #A9A9A9;
 }
 
-.book-item p {
+.item p {
     margin-left: 20px;
 }
 
-.book-infor-div {
+.infor-div {
     display: flex;
     flex-direction: column;
     width: 500px;
@@ -133,6 +133,7 @@ body {
     top: 100px;
     background-color: white;
     padding: 10px;
+    font-size: 20px;
 }
 
 .hide {
@@ -148,4 +149,21 @@ body {
     height: 55%;
     width: 300px;
     font-size: 16px;
+}
+
+table {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+th, tr {
+    text-align: left;
+    border: 1px solid black;
+    font-weight: normal;
+}
+
+.header {
+    font-weight: bold;
 }

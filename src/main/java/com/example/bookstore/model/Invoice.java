@@ -24,7 +24,7 @@ public class Invoice {
     private int invoiceId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="user_Id", nullable = false)
+    @JoinColumn(name="user_id", nullable = false)
     private User user;
 
     @Column(name="total_amount", nullable = false)

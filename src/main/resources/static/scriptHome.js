@@ -184,6 +184,8 @@ mainView.addEventListener("click", async function (e) {
                 bookId: bookId
             })
         });
+
+        alert("Thêm thành công");
     }
 });
 
@@ -344,13 +346,13 @@ function originalForm(total) {
 
 payBtn.addEventListener("click", async function () {
     let items = await getItemsInCart();
-    let totalAmount = originalForm((totalLabel.innerText.split(" "))[2]);
-    console.log(totalAmount);
 
     if (items.length === 0) {
         alert("Giỏ hàng đang trống, vui lòng thêm sản phẩm");
         return;
     }
+
+    let totalAmount = originalForm((totalLabel.innerText.split(" "))[2]);
 
     let res = await fetch("/api/payCart", {
         method: "POST",

@@ -91,7 +91,7 @@ public class CartController {
         CartDetailDTO4 ans = new CartDetailDTO4();
         ArrayList<Integer> bookIds = new ArrayList<>();
         for (CartDetailDTO cartDetail : cart.getCartDetail()) {
-            if (!bookService.isInStock(userId, cartDetail.getQuantity())) {
+            if (!bookService.isInStock(cartDetail.getBookId(), cartDetail.getQuantity())) {
                 bookIds.add(cartDetail.getBookId());
             }
         }

@@ -33,6 +33,9 @@ async function loadBook() {
     pageIndex++;
 }
 
+let viewingInvoice = false;
+let viewingBook = true;
+
 manageBookBtn.style.backgroundColor = "#A9A9A9";
 loadBook();
 
@@ -52,34 +55,45 @@ async function loadDetailBook(bookItem) {
     let bookInfor = await res.json();
 
     let inforDiv = document.createElement("div");
-    inforDiv.classList.add("book-infor-div");
+    inforDiv.classList.add("infor-div");
 
     let bookName = document.createElement("p");
     bookName.innerText = "Tên sách: " + bookInfor.name;
+    bookName.classList.add("header");
 
     let author = document.createElement("p");
     author.innerText = "Tác giả: " + bookInfor.author;
+    author.classList.add("header");
 
     let publish = document.createElement("p");
     publish.innerText = "Năm xuất bản: " + bookInfor.publish;
+    publish.classList.add("header");
 
     let description = document.createElement("p");
     let lbDes = document.createElement("p");
     lbDes.innerText = "Mô tả:";
+    lbDes.classList.add("header");
     description.innerText = bookInfor.description;
 
     let qty = document.createElement("p");
     qty.innerText = "Số lượng trong kho: " + bookInfor.quantity;
     qty.classList.add("qtyElement");
+    qty.classList.add("header");
 
     let price = document.createElement("p");
     price.innerText = "Giá: " + formatTotal(bookInfor.price + "") + " VND";
+    price.classList.add("header");
 
     let closeBtn = document.createElement("button");
     closeBtn.innerText = "Đóng";
     closeBtn.classList.add("closeBtn");
     closeBtn.addEventListener("click", function () {
-        inforDiv.classList.remove("book-infor-div");
+        let liElements = document.querySelectorAll(".item");
+        liElements.forEach(li => {
+            li.style.backgroundColor = "";
+        });
+
+        inforDiv.classList.remove("infor-div");
         mainView.removeChild(inforDiv);
     });
 
@@ -109,7 +123,7 @@ async function loadDetailBook(bookItem) {
 
 function loadAddBookForm() {
     let inforDiv = document.createElement("div");
-    inforDiv.classList.add("book-infor-div");
+    inforDiv.classList.add("infor-div");
 
     let bookName = document.createElement("input");
     bookName.id = "bookName";
@@ -159,7 +173,7 @@ function loadAddBookForm() {
     closeBtn.innerText = "Đóng";
     closeBtn.classList.add("closeBtn");
     closeBtn.addEventListener("click", function () {
-        inforDiv.classList.remove("book-infor-div");
+        inforDiv.classList.remove("infor-div");
         mainView.removeChild(inforDiv);
     });
 
@@ -191,13 +205,13 @@ function loadAddBookForm() {
 }
 
 addBtn.addEventListener("click", function () {
-    if (document.querySelector(".book-infor-div") === null) loadAddBookForm();
+    if (document.querySelector(".infor-div") === null) loadAddBookForm();
 });
 
 function addBookToUI(book) {
     let liElement = document.createElement("li");
     liElement.dataset.bookId = book.bookId;
-    liElement.classList.add("book-item");
+    liElement.classList.add("item");
 
     let bookName = document.createElement("p");
     bookName.innerText = book.name;
@@ -211,18 +225,33 @@ function addBookToUI(book) {
     listItem.appendChild(liElement);
 
     liElement.addEventListener("click", function () {
-        if (document.querySelector(".book-infor-div") === null) loadDetailBook(liElement); //load 1 form khi bấm
+        if (document.querySelector(".infor-div") === null) {
+            liElement.style.backgroundColor = "#A9A9A9";
+            
+            let liElements = document.querySelectorAll(".item");
+            liElements.forEach(li => {
+                if (li.dataset.bookId != liElement.dataset.bookId) li.style.backgroundColor = "";
+            });
+
+            loadDetailBook(liElement);
+        }
     });
 }
 
 manageBookBtn.addEventListener("click", async function () {
+    viewingBook = true;
+    viewingInvoice = false;
+
+    manageBookBtn.style.backgroundColor = "#A9A9A9";
+    manageInvoiceBtn.style.backgroundColor = "";
+
     pageIndex = 0;
     await loadBook();
 });
 
 listItem.addEventListener("scroll", async function () {
     if (listItem.scrollTop + listItem.clientHeight >= listItem.scrollHeight - 20) {
-        await loadBook();
+        if (viewingBook) await loadBook();
     }
 });
 
@@ -234,6 +263,8 @@ mainView.addEventListener("click", async function (e) {
 
         updateBtn.innerText = "Cập nhật";
         updateBtn.style.marginTop = "10px";
+        updateBtn.style.width = "40%";
+        updateBtn.style.alignSelf = "center";
         updateBtn.addEventListener("click", async function () {
             await fetch("/api/book/addQtyBook", {
                 method: "POST",
@@ -247,7 +278,7 @@ mainView.addEventListener("click", async function (e) {
             });
             alert("Cập nhật số lượng thành công");
 
-            let inforDiv = document.querySelector(".book-infor-div");
+            let inforDiv = document.querySelector(".infor-div");
             mainView.removeChild(inforDiv);
         });
 
@@ -338,7 +369,7 @@ mainView.addEventListener("click", async function (e) {
 
             alert("Thêm đầu sách thành công");
 
-            let inforDiv = document.querySelector(".book-infor-div");
+            let inforDiv = document.querySelector(".infor-div");
             mainView.removeChild(inforDiv);
         }
 
