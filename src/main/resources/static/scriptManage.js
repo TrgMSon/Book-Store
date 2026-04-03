@@ -239,6 +239,8 @@ function addBookToUI(book) {
 }
 
 manageBookBtn.addEventListener("click", async function () {
+    addBtn.classList.remove("hide");
+
     viewingBook = true;
     viewingInvoice = false;
 

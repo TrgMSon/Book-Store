@@ -135,6 +135,8 @@ function addInvoiceToUI(invoice) {
 }
 
 manageInvoiceBtn.addEventListener("click", async function () {
+    addBtn.classList.add("hide");
+
     viewingBook = false;
     viewingInvoice = true;
 
