@@ -17,5 +17,5 @@ price.innerText = formatTotal(total);
 
 goBackBtn.addEventListener("click", function (event) {
     event.preventDefault();
-    window.location.href = "/home";
+    window.history.back();
 });
