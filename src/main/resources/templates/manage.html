@@ -2,43 +2,70 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản lý Book Store</title>
-    <link rel="stylesheet" th:href="@{/styleManage.css}">
+    <link rel="stylesheet" th:href="@{/styleManage.css(v='20260404-8')}">
 </head>
 
 <body>
-    <div class="main">
-        <div class="top-taskbar">
-            <button id="goHomeBtn">Quản lý Book Store</button>
-            <form id="searchFormManage">
-                <input type="text" placeholder="Tìm kiếm" id="searchInputManage">
-                <button type="submit" hidden></button>
-            </form>
-            <p th:text="${userName}"></p>
-        </div>
-
-        <div class="main-view">
-            <div class="sidebar">
-                <div class="optionDiv">
-                    <p id="manageBookBtn">Quản lý đầu sách</p>
-                    <p id="manageInvoiceBtn">Quản lý hóa đơn</p>
+    <div class="page-shell">
+        <div class="main">
+            <!-- Header: thương hiệu, ô tìm kiếm và thông tin admin hiện tại -->
+            <header class="top-taskbar">
+                <div class="brand-block">
+                    <p class="brand-tag">Book Store</p>
+                    <button id="goHomeBtn" type="button">Trang quản lý</button>
                 </div>
 
-                <p id="logoutBtn">Đăng xuất</p>
-            </div>
+                <form id="searchFormManage">
+                    <label class="sr-only" for="searchInputManage">Tìm kiếm đầu sách</label>
+                    <input type="text" placeholder="Tìm theo tên sách..." id="searchInputManage" autocomplete="off">
+                    <button type="submit">Tìm</button>
+                </form>
 
-            <div class="main-view2">
-                <div class="optionBtn">
-                    <button id="addBtn" class="btn">Thêm</button>
+                <div class="account-card">
+                    <div class="account-avatar" th:text="${#strings.substring(userName,0,1)}">A</div>
+                    <div class="account-copy">
+                        <p class="account-name" th:text="${userName}"></p>
+                    </div>
                 </div>
+            </header>
 
-                <ul class="listItem"></ul>
+            <div class="main-view">
+                <!-- Sidebar: chuyển qua lại giữa quản lý sách và quản lý hóa đơn -->
+                <aside class="sidebar">
+                    <div class="sidebar-card">
+                        <div class="optionDiv">
+                            <button id="manageBookBtn" class="nav-option" type="button">Đầu sách</button>
+                            <button id="manageInvoiceBtn" class="nav-option" type="button">Hóa đơn</button>
+                        </div>
+                    </div>
+
+                    <button id="logoutBtn" type="button">Đăng xuất</button>
+                </aside>
+
+                <!-- Khung nội dung chính: tiêu đề module, nút thao tác và danh sách dữ liệu -->
+                <section class="main-view2">
+                    <div class="content-header">
+                        <div class="content-copy">
+                            <h1 id="viewTitle">Quản lý đầu sách</h1>
+                        </div>
+
+                        <div class="optionBtn">
+                            <button id="addBtn" class="btn" type="button">+ Thêm sách</button>
+                        </div>
+                    </div>
+
+                    <!-- Danh sách này được tái sử dụng cho cả đầu sách lẫn hóa đơn -->
+                    <ul class="listItem"></ul>
+                </section>
             </div>
         </div>
     </div>
 
-    <script th:src="@{scriptManage.js}"></script>
-    <script th:src="@{scriptModulManage.js}"></script>
+    <script th:src="@{/scriptManage.js(v='20260404-8')}"></script>
+    <script th:src="@{/scriptModulManage.js(v='20260404-8')}"></script>
 </body>
 
 </html>

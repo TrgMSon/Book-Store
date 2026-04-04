@@ -1,5 +1,12 @@
+// Gom cac phan tu DOM chinh cua trang quan ly.
 const logoutBtn = document.getElementById("logoutBtn");
+const goHomeBtn = document.getElementById("goHomeBtn");
 const manageBookBtn = document.getElementById("manageBookBtn");
+const manageInvoiceBtn = document.getElementById("manageInvoiceBtn");
+const searchInputManage = document.getElementById("searchInputManage");
+const searchFormManage = document.getElementById("searchFormManage");
+const searchSubmitBtn = searchFormManage.querySelector("button");
+const viewTitle = document.getElementById("viewTitle");
 const listItem = document.querySelector(".listItem");
 const mainView = document.querySelector(".main-view");
 const addBtn = document.getElementById("addBtn");
@@ -8,101 +15,154 @@ let isLoading = false;
 let hasMore = true;
 let pageIndex = 0;
 
+// Trang /manage mac dinh mo vao module dau sach.
+let viewingInvoice = false;
+let viewingBook = true;
+
+goHomeBtn.addEventListener("click", function () {
+    window.location.href = "/manage";
+});
+
 logoutBtn.addEventListener("click", function () {
     window.location.href = "/logout";
 });
 
+// Tieu de hien tai cua module dang xem.
+function setViewTitle(title) {
+    if (viewTitle) viewTitle.innerText = title;
+}
+
+// Danh dau tab dang duoc chon trong sidebar.
+function setActiveTab(activeButton) {
+    [manageBookBtn, manageInvoiceBtn].forEach(button => {
+        button.classList.toggle("is-active", button === activeButton);
+    });
+}
+
+function clearSelectedItems() {
+    document.querySelectorAll(".item.is-selected").forEach(item => {
+        item.classList.remove("is-selected");
+    });
+}
+
+function setSelectedItem(activeItem) {
+    document.querySelectorAll(".item").forEach(item => {
+        item.classList.toggle("is-selected", item === activeItem);
+    });
+}
+
+// Dong popup chi tiet hoặc form dang mo.
+function closeInforPanel(inforDiv) {
+    if (!inforDiv || !inforDiv.parentElement) return;
+
+    clearSelectedItems();
+    inforDiv.parentElement.removeChild(inforDiv);
+}
+
+// Reset phan trang khi quay lai module sach.
+function resetBookListState() {
+    isLoading = false;
+    hasMore = true;
+    pageIndex = 0;
+}
+
+// O tim kiem chi phuc vu module sach. Sang module hoa don se bi khoa.
+function setSearchAvailability(isEnabled, placeholder) {
+    searchInputManage.disabled = !isEnabled;
+    searchSubmitBtn.disabled = !isEnabled;
+    searchInputManage.placeholder = placeholder;
+
+    if (!isEnabled) {
+        searchInputManage.value = "";
+    }
+}
+
+// Tai dau sach theo tung trang de tranh nap qua nhieu du lieu cung luc.
 async function loadBook() {
     if (isLoading || !hasMore) return;
 
     isLoading = true;
 
-    let res = await fetch("/api/book/pagingBook?index=" + pageIndex);
-    let books = await res.json();
+    try {
+        const res = await fetch("/api/book/pagingBook?index=" + pageIndex);
+        const books = await res.json();
 
-    if (books.length === 0) {
-        hasMore = false;
-        return;
+        if (books.length === 0) {
+            hasMore = false;
+            return;
+        }
+
+        for (const book of books) {
+            addBookToUI(book);
+        }
+
+        pageIndex++;
+    } finally {
+        isLoading = false;
     }
-
-    for (let book of books) {
-        addBookToUI(book);
-    }
-
-    isLoading = false;
-    pageIndex++;
 }
-
-let viewingInvoice = false;
-let viewingBook = true;
-
-manageBookBtn.style.backgroundColor = "#A9A9A9";
-loadBook();
 
 function formatTotal(total) {
     let ans = "";
-    let arr = total.split('');
+    const arr = total.split("");
     arr.reverse();
+
     for (let i = 0; i < arr.length; i++) {
         ans = arr[i] + ans;
-        if ((i + 1) % 3 === 0 && i > 0 && (i + 1) < arr.length) ans = '.' + ans;
+        if ((i + 1) % 3 === 0 && i > 0 && (i + 1) < arr.length) ans = "." + ans;
     }
+
     return ans;
 }
 
+// Popup chi tiet sach: xem thong tin, sua so luong, xoa dau sach.
 async function loadDetailBook(bookItem) {
-    let res = await fetch("/api/book/viewBook?bookId=" + bookItem.dataset.bookId);
-    let bookInfor = await res.json();
+    const res = await fetch("/api/book/viewBook?bookId=" + bookItem.dataset.bookId);
+    const bookInfor = await res.json();
 
-    let inforDiv = document.createElement("div");
+    const inforDiv = document.createElement("div");
     inforDiv.classList.add("infor-div");
 
-    let bookName = document.createElement("p");
+    const bookName = document.createElement("p");
     bookName.innerText = "Tên sách: " + bookInfor.name;
     bookName.classList.add("header");
 
-    let author = document.createElement("p");
+    const author = document.createElement("p");
     author.innerText = "Tác giả: " + bookInfor.author;
     author.classList.add("header");
 
-    let publish = document.createElement("p");
+    const publish = document.createElement("p");
     publish.innerText = "Năm xuất bản: " + bookInfor.publish;
     publish.classList.add("header");
 
-    let description = document.createElement("p");
-    let lbDes = document.createElement("p");
+    const lbDes = document.createElement("p");
     lbDes.innerText = "Mô tả:";
     lbDes.classList.add("header");
+
+    const description = document.createElement("p");
     description.innerText = bookInfor.description;
 
-    let qty = document.createElement("p");
+    const qty = document.createElement("p");
     qty.innerText = "Số lượng trong kho: " + bookInfor.quantity;
-    qty.classList.add("qtyElement");
-    qty.classList.add("header");
+    qty.classList.add("qtyElement", "header");
 
-    let price = document.createElement("p");
+    const price = document.createElement("p");
     price.innerText = "Giá: " + formatTotal(bookInfor.price + "") + " VND";
     price.classList.add("header");
 
-    let closeBtn = document.createElement("button");
+    const closeBtn = document.createElement("button");
     closeBtn.innerText = "Đóng";
     closeBtn.classList.add("closeBtn");
     closeBtn.addEventListener("click", function () {
-        let liElements = document.querySelectorAll(".item");
-        liElements.forEach(li => {
-            li.style.backgroundColor = "";
-        });
-
-        inforDiv.classList.remove("infor-div");
-        mainView.removeChild(inforDiv);
+        closeInforPanel(inforDiv);
     });
 
-    let editBtn = document.createElement("button");
+    const editBtn = document.createElement("button");
     editBtn.classList.add("editBtn");
     editBtn.innerText = "Sửa";
     editBtn.dataset.bookId = bookInfor.bookId;
 
-    let delBtn = document.createElement("button");
+    const delBtn = document.createElement("button");
     delBtn.classList.add("delBtn");
     delBtn.innerText = "Xóa";
     delBtn.dataset.bookId = bookInfor.bookId;
@@ -121,63 +181,63 @@ async function loadDetailBook(bookItem) {
     mainView.appendChild(inforDiv);
 }
 
+// Form them dau sach moi vao kho.
 function loadAddBookForm() {
-    let inforDiv = document.createElement("div");
+    const inforDiv = document.createElement("div");
     inforDiv.classList.add("infor-div");
 
-    let bookName = document.createElement("input");
+    const bookName = document.createElement("input");
     bookName.id = "bookName";
-    let lbName = document.createElement("p");
+    const lbName = document.createElement("p");
     lbName.innerText = "Tên sách:";
 
-    let author = document.createElement("input");
+    const author = document.createElement("input");
     author.id = "author";
-    let lbAuthor = document.createElement("p");
+    const lbAuthor = document.createElement("p");
     lbAuthor.innerText = "Tác giả:";
 
-    let publish = document.createElement("input");
+    const publish = document.createElement("input");
     publish.id = "publish";
-    let lbPublish = document.createElement("p");
+    const lbPublish = document.createElement("p");
     lbPublish.innerText = "Năm xuất bản:";
 
-    let type = document.createElement("input");
+    const type = document.createElement("input");
     type.id = "type";
-    let lbType = document.createElement("p");
+    const lbType = document.createElement("p");
     lbType.innerText = "Thể loại:";
 
-    let desc = document.createElement("textarea");
+    const desc = document.createElement("textarea");
     desc.id = "desc";
-    desc.style.minHeight = "80px";
-    desc.style.resize = "none";
-    let lbDesc = document.createElement("p");
+    desc.rows = 4;
+    desc.style.resize = "vertical";
+    const lbDesc = document.createElement("p");
     lbDesc.innerText = "Mô tả:";
 
-    let price = document.createElement("input");
+    const price = document.createElement("input");
     price.id = "price";
-    let lbPrice = document.createElement("p");
+    const lbPrice = document.createElement("p");
     lbPrice.innerText = "Giá (VND):";
 
-    let qty = document.createElement("input");
+    const qty = document.createElement("input");
     qty.id = "qty";
-    let lbQty = document.createElement("p");
+    const lbQty = document.createElement("p");
     lbQty.innerText = "Số lượng:";
 
-    let imgInput = document.createElement("input");
+    const imgInput = document.createElement("input");
     imgInput.type = "file";
     imgInput.accept = "image/*";
     imgInput.id = "imgInput";
-    let lbImgInput = document.createElement("p");
+    const lbImgInput = document.createElement("p");
     lbImgInput.innerText = "Chọn ảnh:";
 
-    let closeBtn = document.createElement("button");
+    const closeBtn = document.createElement("button");
     closeBtn.innerText = "Đóng";
     closeBtn.classList.add("closeBtn");
     closeBtn.addEventListener("click", function () {
-        inforDiv.classList.remove("infor-div");
-        mainView.removeChild(inforDiv);
+        closeInforPanel(inforDiv);
     });
 
-    let acptBtn = document.createElement("button");
+    const acptBtn = document.createElement("button");
     acptBtn.id = "acptBtn";
     acptBtn.innerText = "Xác nhận";
     acptBtn.classList.add("acptBtn");
@@ -208,16 +268,17 @@ addBtn.addEventListener("click", function () {
     if (document.querySelector(".infor-div") === null) loadAddBookForm();
 });
 
+// Moi dong trong danh sach tuong ung voi mot dau sach.
 function addBookToUI(book) {
-    let liElement = document.createElement("li");
+    const liElement = document.createElement("li");
     liElement.dataset.bookId = book.bookId;
     liElement.classList.add("item");
 
-    let bookName = document.createElement("p");
+    const bookName = document.createElement("p");
     bookName.innerText = book.name;
 
-    let type = document.createElement("p");
-    type.innerText = "(" + book.type + ")";
+    const type = document.createElement("p");
+    type.innerText = book.type;
 
     liElement.appendChild(bookName);
     liElement.appendChild(type);
@@ -226,49 +287,46 @@ function addBookToUI(book) {
 
     liElement.addEventListener("click", function () {
         if (document.querySelector(".infor-div") === null) {
-            liElement.style.backgroundColor = "#A9A9A9";
-            
-            let liElements = document.querySelectorAll(".item");
-            liElements.forEach(li => {
-                if (li.dataset.bookId != liElement.dataset.bookId) li.style.backgroundColor = "";
-            });
-
+            setSelectedItem(liElement);
             loadDetailBook(liElement);
         }
     });
 }
 
+// Quay lai module sach va tai lai danh sach tu trang dau tien.
 manageBookBtn.addEventListener("click", async function () {
     addBtn.classList.remove("hide");
+    addBtn.innerText = "+ Thêm sách";
 
     viewingBook = true;
     viewingInvoice = false;
 
     listItem.innerHTML = "";
+    clearSelectedItems();
+    setActiveTab(manageBookBtn);
+    setViewTitle("Quản lý đầu sách");
+    setSearchAvailability(true, "Tìm theo tên sách...");
+    resetBookListState();
 
-    manageBookBtn.style.backgroundColor = "#A9A9A9";
-    manageInvoiceBtn.style.backgroundColor = "";
-
-    pageIndex = 0;
     await loadBook();
 });
 
+// Infinite scroll cho danh sach sach.
 listItem.addEventListener("scroll", async function () {
     if (listItem.scrollTop + listItem.clientHeight >= listItem.scrollHeight - 20) {
         if (viewingBook) await loadBook();
     }
 });
 
+// Cum xu ly cac thao tac trong popup sach: cap nhat so luong, them, xoa.
 mainView.addEventListener("click", async function (e) {
     if (e.target.classList.contains("editBtn")) {
-        let qtyElement = document.querySelector(".qtyElement");
-        let qtyInput = document.createElement("input");
-        let updateBtn = document.createElement("button");
+        const qtyElement = document.querySelector(".qtyElement");
+        const qtyInput = document.createElement("input");
+        const updateBtn = document.createElement("button");
 
         updateBtn.innerText = "Cập nhật";
-        updateBtn.style.marginTop = "10px";
-        updateBtn.style.width = "40%";
-        updateBtn.style.alignSelf = "center";
+        updateBtn.classList.add("updateBtn");
         updateBtn.addEventListener("click", async function () {
             await fetch("/api/book/addQtyBook", {
                 method: "POST",
@@ -280,26 +338,27 @@ mainView.addEventListener("click", async function (e) {
                     quantity: qtyInput.value
                 })
             });
+
             alert("Cập nhật số lượng thành công");
 
-            let inforDiv = document.querySelector(".infor-div");
-            mainView.removeChild(inforDiv);
+            const inforDiv = document.querySelector(".infor-div");
+            closeInforPanel(inforDiv);
         });
 
-        qtyInput.value = qtyElement.innerText.split(" ")[4];
+        qtyInput.value = qtyElement.innerText.split(": ").pop();
         qtyElement.replaceWith(qtyInput);
         e.target.replaceWith(updateBtn);
     }
 
     else if (e.target.classList.contains("acptBtn")) {
-        let bookName = document.querySelector("#bookName");
-        let author = document.querySelector("#author");
-        let publish = document.querySelector("#publish");
-        let type = document.querySelector("#type");
-        let desc = document.querySelector("#desc");
-        let price = document.querySelector("#price");
-        let qty = document.querySelector("#qty");
-        let imgInput = document.querySelector("#imgInput");
+        const bookName = document.querySelector("#bookName");
+        const author = document.querySelector("#author");
+        const publish = document.querySelector("#publish");
+        const type = document.querySelector("#type");
+        const desc = document.querySelector("#desc");
+        const price = document.querySelector("#price");
+        const qty = document.querySelector("#qty");
+        const imgInput = document.querySelector("#imgInput");
 
         if (bookName.value.trim() === "") {
             bookName.focus();
@@ -336,23 +395,25 @@ mainView.addEventListener("click", async function (e) {
             return;
         }
 
-        if (imgInput.value != "") {
-            let formData = new FormData();
-            let image = imgInput.files[0];
+        if (imgInput.value !== "") {
+            const formData = new FormData();
+            const image = imgInput.files[0];
             formData.append("image", image);
-            let response = await fetch("/api/book/upload-image", {
+
+            const response = await fetch("/api/book/upload-image", {
                 method: "POST",
                 body: formData
             });
 
             if (!response.ok) {
-                alert("Ảnh gửi lên quá 20MB, vui lòng thử lại");
+                const errorMessage = await response.text();
+                alert(errorMessage || "Ảnh gửi lên quá 20MB, vui lòng thử lại");
                 return;
             }
 
-            let urlImg = await response.text();
+            const urlImg = await response.text();
 
-            let bookData = {
+            const bookData = {
                 name: bookName.value.trim(),
                 author: author.value.trim(),
                 publish: publish.value.trim(),
@@ -361,7 +422,7 @@ mainView.addEventListener("click", async function (e) {
                 price: price.value.trim(),
                 urlImg: urlImg,
                 quantity: qty.value.trim()
-            }
+            };
 
             await fetch("/api/book/addBook", {
                 method: "POST",
@@ -373,8 +434,12 @@ mainView.addEventListener("click", async function (e) {
 
             alert("Thêm đầu sách thành công");
 
-            let inforDiv = document.querySelector(".infor-div");
-            mainView.removeChild(inforDiv);
+            const inforDiv = document.querySelector(".infor-div");
+            closeInforPanel(inforDiv);
+
+            listItem.innerHTML = "";
+            resetBookListState();
+            await loadBook();
         }
 
         else imgInput.focus();
@@ -393,6 +458,16 @@ mainView.addEventListener("click", async function (e) {
 
         alert("Xóa đầu sách thành công");
 
-        window.location.href = "/manage";
+        const deletedItem = document.querySelector(`.item[data-book-id="${e.target.dataset.bookId}"]`);
+        const inforDiv = document.querySelector(".infor-div");
+
+        if (deletedItem) deletedItem.remove();
+        closeInforPanel(inforDiv);
     }
 });
+
+// Trang thai mac dinh khi vao man hinh quan ly.
+setActiveTab(manageBookBtn);
+setViewTitle("Quản lý đầu sách");
+setSearchAvailability(true, "Tìm theo tên sách...");
+loadBook();
