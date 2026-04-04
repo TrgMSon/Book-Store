@@ -3,6 +3,7 @@ const manageBookBtn = document.getElementById("manageBookBtn");
 const listItem = document.querySelector(".listItem");
 const mainView = document.querySelector(".main-view");
 const addBtn = document.getElementById("addBtn");
+const mainview2 = document.querySelector(".main-view2");
 
 let isLoading = false;
 let hasMore = true;
@@ -266,9 +267,7 @@ mainView.addEventListener("click", async function (e) {
         let updateBtn = document.createElement("button");
 
         updateBtn.innerText = "Cập nhật";
-        updateBtn.style.marginTop = "10px";
-        updateBtn.style.width = "40%";
-        updateBtn.style.alignSelf = "center";
+        updateBtn.classList.add("updateBtn");
         updateBtn.addEventListener("click", async function () {
             await fetch("/api/book/addQtyBook", {
                 method: "POST",

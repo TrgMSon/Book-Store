@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -39,6 +39,78 @@
 
     <script th:src="@{scriptManage.js}"></script>
     <script th:src="@{scriptModulManage.js}"></script>
+</body>
+
+</html> -->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Book Store</title>
+    <link rel="stylesheet" th:href="@{/styleManage.css}">
+</head>
+
+<body>
+    <div class="page-shell">
+        <div class="main">
+
+            <header class="top-taskbar">
+                <div class="brand-block">
+                    <p class="brand-tag">Book Store</p>
+                    <button id="goHomeBtn" type="button">Trang quản lý</button>
+                </div>
+
+                <form id="searchFormManage">
+                    <label class="sr-only" for="searchInputManage">Tìm kiếm đầu sách</label>
+                    <input type="text" placeholder="Tìm theo tên sách..." id="searchInputManage" autocomplete="off">
+                    <button type="submit">Tìm</button>
+                </form>
+
+                <div class="account-card">
+                    <div class="account-avatar" th:text="${#strings.substring(userName,0,1)}">A</div>
+                    <div class="account-copy">
+                        <p class="account-name" th:text="${userName}"></p>
+                    </div>
+                </div>
+            </header>
+
+            <div class="main-view">
+
+                <aside class="sidebar">
+                    <div class="sidebar-card">
+                        <div class="optionDiv">
+                            <button id="manageBookBtn" class="nav-option" type="button">Đầu sách</button>
+                            <button id="manageInvoiceBtn" class="nav-option" type="button">Hóa đơn</button>
+                        </div>
+                    </div>
+
+                    <button id="logoutBtn" type="button">Đăng xuất</button>
+                </aside>
+
+
+                <section class="main-view2">
+                    <div class="content-header">
+                        <div class="content-copy">
+                            <h1 id="viewTitle">Quản lý đầu sách</h1>
+                        </div>
+
+                        <div class="optionBtn">
+                            <button id="addBtn" class="btn" type="button">+ Thêm sách</button>
+                        </div>
+                    </div>
+
+
+                    <ul class="listItem"></ul>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/scriptManage.js}"></script>
+    <script th:src="@{/scriptModulManage.js}"></script>
 </body>
 
 </html>

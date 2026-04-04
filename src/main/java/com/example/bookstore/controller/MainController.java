@@ -79,7 +79,7 @@ public class MainController {
             return "redirect:/login";
         }
         
-        ArrayList<Book> books = bookService.getAllBook("IT");
+        ArrayList<Book> books = bookService.getAllBookType("IT");
         model.addAttribute("books", books);
 
         User user = userService.findUserById(Integer.parseInt(userId));

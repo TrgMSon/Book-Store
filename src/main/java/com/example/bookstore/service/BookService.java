@@ -15,7 +15,7 @@ public class BookService {
     @Autowired
     private BookRepo bookRepo;
 
-    public ArrayList<Book> getAllBook(String type) {
+    public ArrayList<Book> getAllBookType(String type) {
         ArrayList<Book> books = new ArrayList<>();
         books = bookRepo.findAllBookType(type);
         return books;
@@ -35,6 +35,10 @@ public class BookService {
 
     public ArrayList<Book> pagingBook(int index) {
         return bookRepo.pagingBook(index);
+    }
+
+    public ArrayList<Book> getAllBook() {
+        return bookRepo.findAllBook();
     }
 
     public void addQtyBook(int quantity, int bookId) {

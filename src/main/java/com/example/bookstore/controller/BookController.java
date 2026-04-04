@@ -32,11 +32,16 @@ public class BookController {
 
     @GetMapping("/getBookType")
     public ArrayList<Book> getBookType(@RequestParam String type) {
-        return bookService.getAllBook(type);
+        return bookService.getAllBookType(type);
+    }
+
+    @GetMapping("/getAllBook")
+    public ArrayList<Book> getPagingBook() {
+        return bookService.getAllBook();
     }
 
     @GetMapping("/pagingBook")
-    public ArrayList<Book> getPagingBook(@RequestParam int index) {
+    public ArrayList<Book> pagingBook(@RequestParam int index) {
         return bookService.pagingBook(index * 10);
     }
 
