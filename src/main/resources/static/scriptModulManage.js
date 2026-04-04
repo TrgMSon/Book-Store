@@ -1,64 +1,77 @@
-const searchInputManage = document.getElementById("searchInputManage");
-const searchFormManage = document.getElementById("searchFormManage");
-const manageInvoiceBtn = document.getElementById("manageInvoiceBtn");
-
+// Tim kiem chi ap dung cho module sach.
 searchFormManage.addEventListener("submit", async function (e) {
     e.preventDefault();
 
-    let target = searchInputManage.value.trim();
+    if (!viewingBook) return;
 
-    if (target === "") return;
+    const target = searchInputManage.value.trim();
 
-    let response = await fetch("/api/book/searchBookManage?name=" + target);
-    let books = await response.json();
-
-    if (books.length === 0) {
-        alert("Không có kết quả phù hợp")
+    // Neu xoa tu khoa thi quay lai danh sach sach mac dinh.
+    if (target === "") {
+        listItem.innerHTML = "";
+        clearSelectedItems();
+        resetBookListState();
+        await loadBook();
         return;
     }
 
+    const response = await fetch("/api/book/searchBookManage?name=" + encodeURIComponent(target));
+    const books = await response.json();
+
     listItem.innerHTML = "";
+    clearSelectedItems();
+    hasMore = false;
+    isLoading = false;
+
+    if (books.length === 0) {
+        alert("Không có kết quả phù hợp");
+        return;
+    }
+
     for (let i = 0; i < books.length; i++) {
         addBookToUI(books[i]);
     }
 });
 
 function formatDate(date) {
-    let arr = date.split("T")[0].split("-");
+    const arr = date.split("T")[0].split("-");
     return `${arr[2]}/${arr[1]}/${arr[0]}`;
 }
 
+// Popup chi tiet hoa don: nguoi mua, danh sach san pham, tong tien.
 async function loadDetailInvoice(invoice) {
-    let invoiceId = invoice.dataset.invoiceId;
-    let response = await fetch("/api/manage/viewInvoiceDetail?invoiceId=" + invoiceId);
-    let invoiceData = await response.json();
+    const invoiceId = invoice.dataset.invoiceId;
+    const response = await fetch("/api/manage/viewInvoiceDetail?invoiceId=" + invoiceId);
+    const invoiceData = await response.json();
 
-    let inforDiv = document.createElement("div");
+    const inforDiv = document.createElement("div");
     inforDiv.classList.add("infor-div");
 
-    let userName = document.createElement("p");
+    const userName = document.createElement("p");
     userName.innerText = "Người mua: " + invoiceData.userName;
+    userName.classList.add("header");
 
-    let email = document.createElement("p");
+    const email = document.createElement("p");
     email.innerText = "Email: " + invoiceData.email;
 
-    let lbDetail = document.createElement("p");
-    lbDetail.innerText = "Danh sách sản phẩm: ";
+    const lbDetail = document.createElement("p");
+    lbDetail.innerText = "Danh sách sản phẩm:";
+    lbDetail.classList.add("header");
 
     inforDiv.appendChild(userName);
     inforDiv.appendChild(email);
     inforDiv.appendChild(lbDetail);
 
-    let details = invoiceData.invoiceDetails;
-    let detailElement = document.createElement("table");
-    let titleRow = document.createElement("tr");
+    const details = invoiceData.invoiceDetails;
+    const detailElement = document.createElement("table");
+    const titleRow = document.createElement("tr");
     titleRow.classList.add("header");
 
-    let title1 = document.createElement("th");
+    const title1 = document.createElement("th");
     title1.innerText = "Tên sách";
-    let title2 = document.createElement("th");
+    const title2 = document.createElement("th");
     title2.innerText = "Số lượng";
-    let title3 = document.createElement("th");
+    const title3 = document.createElement("th");
     title3.innerText = "Đơn giá (VND)";
 
     titleRow.appendChild(title1);
@@ -67,13 +80,13 @@ async function loadDetailInvoice(invoice) {
     detailElement.appendChild(titleRow);
 
     for (let i = 0; i < details.length; i++) {
-        let row = document.createElement("tr");
+        const row = document.createElement("tr");
 
-        let bookName = document.createElement("th");
+        const bookName = document.createElement("th");
         bookName.innerText = details[i].bookName;
-        let quantity = document.createElement("th");
+        const quantity = document.createElement("th");
         quantity.innerText = details[i].quantity;
-        let price = document.createElement("th");
+        const price = document.createElement("th");
         price.innerText = formatTotal(details[i].price + "");
 
         row.appendChild(bookName);
@@ -82,21 +95,16 @@ async function loadDetailInvoice(invoice) {
         detailElement.appendChild(row);
     }
 
-    let closeBtn = document.createElement("button");
+    const closeBtn = document.createElement("button");
     closeBtn.innerText = "Đóng";
     closeBtn.classList.add("closeBtn");
     closeBtn.addEventListener("click", function () {
-        let liElements = document.querySelectorAll(".item");
-        liElements.forEach(li => {
-            li.style.backgroundColor = "";
-        });
-
-        inforDiv.classList.remove("infor-div");
-        mainView.removeChild(inforDiv);
+        closeInforPanel(inforDiv);
     });
 
-    let total = document.createElement("p");
+    const total = document.createElement("p");
     total.innerText = "Tổng tiền: " + formatTotal(invoiceData.totalAmount + "") + " VND";
+    total.classList.add("header");
 
     inforDiv.appendChild(detailElement);
     inforDiv.appendChild(total);
@@ -104,16 +112,17 @@ async function loadDetailInvoice(invoice) {
     mainView.appendChild(inforDiv);
 }
 
+// Moi dong trong danh sach hoa don tuong ung voi mot hoa don.
 function addInvoiceToUI(invoice) {
-    let liElement = document.createElement("li");
+    const liElement = document.createElement("li");
     liElement.dataset.invoiceId = invoice.invoiceId;
     liElement.classList.add("item");
 
-    let invoiceId = document.createElement("p");
+    const invoiceId = document.createElement("p");
     invoiceId.innerText = "ID: " + invoice.invoiceId;
 
-    let createdAt = document.createElement("p");
-    createdAt.innerText = "(Ngày tạo: " + formatDate(invoice.createdAt) + ")";
+    const createdAt = document.createElement("p");
+    createdAt.innerText = formatDate(invoice.createdAt);
 
     liElement.appendChild(invoiceId);
     liElement.appendChild(createdAt);
@@ -122,31 +131,27 @@ function addInvoiceToUI(invoice) {
 
     liElement.addEventListener("click", function () {
         if (document.querySelector(".infor-div") === null) {
-            liElement.style.backgroundColor = "#A9A9A9";
-
-            let liElements = document.querySelectorAll(".item");
-            liElements.forEach(li => {
-                if (li.dataset.invoiceId != liElement.dataset.invoiceId) li.style.backgroundColor = "";
-            });
-
+            setSelectedItem(liElement);
             loadDetailInvoice(liElement);
         }
     });
 }
 
+// Chuyen sang module hoa don: an nut them sach va nap danh sach hoa don.
 manageInvoiceBtn.addEventListener("click", async function () {
     addBtn.classList.add("hide");
 
     viewingBook = false;
     viewingInvoice = true;
 
-    manageBookBtn.style.backgroundColor = "";
-    manageInvoiceBtn.style.backgroundColor = "#A9A9A9";
-
-    let response = await fetch("/api/manage/getAllInvoice");
-    let invoices = await response.json();
-
     listItem.innerHTML = "";
+    clearSelectedItems();
+    setActiveTab(manageInvoiceBtn);
+    setSearchAvailability(false, "Tìm kiếm chỉ hỗ trợ ở mục đầu sách");
+
+    const response = await fetch("/api/manage/getAllInvoice");
+    const invoices = await response.json();
+
     for (let i = 0; i < invoices.length; i++) {
         addInvoiceToUI(invoices[i]);
     }

@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,9 +29,9 @@ import com.example.bookstore.service.BookService;
 public class BookController {
     @Autowired
     private BookService bookService;
-    
+
     @Autowired
-    private Cloudinary cloudinary;
+    private ObjectProvider<Cloudinary> cloudinaryProvider;
 
     @GetMapping("/getBookType")
     public ArrayList<Book> getBookType(@RequestParam String type) {
@@ -51,9 +54,16 @@ public class BookController {
     }
 
     @PostMapping("/upload-image")
-    public String uploadImage(@RequestParam("image") MultipartFile file) throws IOException {
+    public ResponseEntity<String> uploadImage(@RequestParam("image") MultipartFile file) throws IOException {
+        // Local dev can run without Cloudinary. Only the upload endpoint is blocked.
+        Cloudinary cloudinary = cloudinaryProvider.getIfAvailable();
+        if (cloudinary == null) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                    .body("Cloudinary chua duoc cau hinh. Hay them CLOUDINARY_NAME, CLOUDINARY_API_KEY va CLOUDINARY_API_SECRET de bat upload anh.");
+        }
+
         Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
-        return uploadResult.get("url").toString();
+        return ResponseEntity.ok(uploadResult.get("url").toString());
     }
 
     @PostMapping("/addBook")
@@ -67,12 +77,12 @@ public class BookController {
     }
 
     @GetMapping("/searchBookManage")
-    public ArrayList<Book> searchBookManage( @RequestParam String name) {
+    public ArrayList<Book> searchBookManage(@RequestParam String name) {
         return bookService.searchBookManage(name);
     }
 
     @PostMapping("/deleteBook")
     public void deleteBook(@RequestBody BookDTO4 bookDTO4) {
         bookService.deleteBook(bookDTO4.getBookId());
-    } 
+    }
 }

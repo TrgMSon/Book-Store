@@ -1,207 +1,231 @@
-body {
+/* --- CÀI ĐẶT CHUNG --- */
+* {
     margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    /* Font chữ không chân giống Amazon */
+}
+
+body {
+    background-color: #ffffff;
+    color: #0F1111;
 }
 
 .main {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    min-height: 100vh;
 }
 
+/* --- THANH TASKBAR (Giống Header Amazon) --- */
 .top-taskbar {
+    background-color: #131921;
+    /* Màu xanh đen đặc trưng của Amazon */
+    color: white;
     display: flex;
-    width: 100%;
-    border-bottom: 1px solid black;
-    padding-bottom: 10px;
-    padding-top: 20px;
-    position: relative;
+    align-items: center;
+    padding: 10px 20px;
+    gap: 20px;
 }
 
-.top-taskbar p {
-    width: fit-content;
-    margin: 20px;
-    font-size: 20px;
-}
-
-.main-view {
-    display: flex;
-    height: 80%;
-    flex: 1;
-    margin-top: 40px;
-}
-
-#cartBtn {
-    margin-left: 5%;
-    border: none;
-    background-color: white;
+.top-taskbar button {
+    background: transparent;
+    border: 1px solid transparent;
+    color: white;
+    font-weight: bold;
     cursor: pointer;
-    font-size: 20px;
+    padding: 8px 10px;
+    border-radius: 2px;
 }
 
-.optionDiv {
-    border: 1px solid black;
-    display: flex;
-    flex-direction: column;
-    height: fit-content;
-    border-radius: 4px;
-    font-size: 18px;
-}
-
-#logoutBtn {
-    font-size: 18px;
-    margin-top: 100px;
-    height: fit-content;
-    width: 180px;
-    border: 1px solid black;
-    text-align: center;
-}
-
-#logoutBtn:hover, #cartBtn:hover {
-    background-color: #A9A9A9;
+.top-taskbar button:hover {
+    border: 1px solid white;
+    /* Hiệu ứng hover viền trắng */
 }
 
 #goHomeBtn {
-    font-size: 30px;
-    width: auto;
-    border: none;
-    background-color: white;
-    cursor: pointer;
-    padding-left: 10px;
+    font-size: 1.2rem;
 }
 
-.sidebar {
-    width: 300px;
-    height: 90%;
-    margin-right: 10px;
-    margin-left: 10px;
-    padding-right: 20px;
-    padding-left: 20px;
-}
-
-.sidebar p {
-    padding: 20px;
-    border-bottom: 1px solid black;
-    cursor: pointer;
-}
-
-.sidebar p:hover {
-    background-color: #A9A9A9;
-}
-
-.main-view2 {
-    flex: 1;
-    border: 1px solid black;
-    border-radius: 4px;
-    padding: 20px;
+/* Thanh tìm kiếm */
+#searchForm {
+    flex-grow: 1;
+    /* Cho phép thanh tìm kiếm chiếm khoảng trống còn lại */
     display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    overflow: auto;
-    overflow-y: scroll;
+}
+
+#searchInput {
+    width: 100%;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    outline: none;
+}
+
+#searchInput:focus {
+    box-shadow: 0 0 0 2px #f90, 0 0 0 3px transparent;
+    /* Viền cam khi click vào giống Amazon */
+}
+
+.top-taskbar p {
+    font-weight: bold;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+/* --- BỐ CỤC CHÍNH --- */
+.main-view {
+    display: flex;
+    padding: 20px;
+    gap: 30px;
+}
+
+/* --- SIDEBAR (Danh mục bên trái) --- */
+.sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    border-right: 1px solid #ddd;
+    padding-right: 15px;
+}
+
+.sidebar .optionDiv p {
+    padding: 8px 0;
+    color: #111;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.sidebar .optionDiv p:hover {
+    color: #c45500;
+    /* Màu cam chữ khi hover giống Amazon */
+    text-decoration: underline;
+}
+
+#logoutBtn {
+    margin-top: 30px;
+    padding: 10px 0;
+    color: #007185;
+    /* Màu link xanh của Amazon */
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#logoutBtn:hover {
+    color: #c45500;
+    text-decoration: underline;
+}
+
+/* --- HIỂN THỊ SÁCH (Grid bên phải) --- */
+.main-view2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 25px;
+    width: 100%;
 }
 
 .viewBook {
+    background: #fff;
+    padding: 10px;
     display: flex;
     flex-direction: column;
-    border: 1px solid black;
-    padding: 10px;
-    width: 150px;
-    height: 300px;
-    padding-bottom: 15px;
+    gap: 8px;
 }
 
 .viewBook img {
-    flex: 1;
-    max-height: 76%;
+    width: 100%;
+    height: 300px;
+    /* Cố định chiều cao ảnh để đều nhau */
+    object-fit: contain;
+    /* Giữ nguyên tỉ lệ ảnh sách */
+    margin-bottom: 10px;
 }
 
 .viewBook p {
-    font-weight: bold;
-    font-size: 16px;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    font-size: 1rem;
+    color: #0F1111;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    /* Chỉ hiển thị tối đa 2 dòng tên sách */
+    -webkit-box-orient: vertical;
 }
 
+/* Nút bấm trong thẻ sách */
 .viewBook button {
-    justify-self: end;
+    padding: 8px;
+    border-radius: 100px;
+    /* Nút bo tròn của Amazon */
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-size: 0.9rem;
+    width: 100%;
+    margin-top: auto;
 }
 
+.addToCart {
+    background-color: #FFD814;
+    /* Màu vàng nút Add to Cart của Amazon */
+    color: #0F1111;
+}
+
+.addToCart:hover {
+    background-color: #F7CA00;
+}
+
+.viewDetailBtn {
+    background-color: #FFA41C;
+    /* Màu cam nhạt cho nút phụ */
+    color: #0F1111;
+    margin-top: 5px;
+}
+
+.viewDetailBtn:hover {
+    background-color: #FA8900;
+}
+
+/* --- GIỎ HÀNG (View Cart) --- */
+/* (Phần này mình chỉnh lại cho gọn gàng và đồng bộ màu sắc) */
 .viewCart {
-    position: absolute;
+    padding: 20px;
+    border-top: 2px solid #ddd;
+    background-color: #f3f3f3;
+}
+
+.viewCart h2 {
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+}
+
+#itemsInCart {
     display: flex;
     flex-direction: column;
-    padding: 12px;
-    left: 500px;
-    top: 100px;
-    background-color: white;
-    min-width: 400px;
-    min-height: 400px;
-    width: fit-content;
-    height: fit-content;
-    border: 1px solid black;
-}
-
-.hide {
-    display: none;
-}
-
-.item {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    overflow: auto;
-    overflow-y: scroll;
-    border-top: 1px solid black;
-    border-bottom: 1px solid black;
-}
-
-.itemsDiv {
-    display: flex;
-    width: 90%;
-}
-
-.itemsDiv:hover {
-    background-color: #A9A9A9;
-}
-
-.bookNameElement {
-    flex: 1;
-    margin-right: 4px;
-}
-
-.qtyItemInput {
-    width: 10%;
-    height: fit-content;
-    align-self: center;
-    margin-left: 20px;
-}
-
-#payBtn, #updateCart {
-    width: fit-content;
-    align-self: center;
-    margin-left: 10px;
+    gap: 10px;
+    margin-bottom: 15px;
 }
 
 #btnDiv {
     display: flex;
-    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
 }
 
-.delItemBtn {
-    height: fit-content;
-    margin-left: 10px;
-    justify-self: right;
-    align-self: center;
+#btnDiv button {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
 }
 
-#searchForm {
-    margin-left: 40%;
-    margin-right: 40px;
+#payBtn {
+    background-color: #FFD814;
 }
 
-#searchInput {
-    height: 55%;
-    width: 300px;
-    font-size: 16px;
+#updateCart {
+    background-color: #e3e6e6;
+    border: 1px solid #d5d9d9;
 }

@@ -1,7 +1,12 @@
 package com.example.bookstore.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Condition;
+import org.springframework.context.annotation.ConditionContext;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.type.AnnotatedTypeMetadata;
+import org.springframework.util.StringUtils;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
@@ -12,30 +17,40 @@ import io.github.cdimascio.dotenv.Dotenv;
 public class CloudinaryConfig {
 
     @Bean
+    @Conditional(CloudinaryCredentialsCondition.class)
     public Cloudinary cloudinary() {
-        // Load dotenv nhưng không bắt buộc phải có file
+        // Skip bean creation when local dev has no Cloudinary credentials.
         Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
 
-        // CÁCH LẤY BIẾN THÔNG MINH: 
-        // Thử lấy từ System Environment (Render/Railway) trước, nếu không có mới lấy từ .env (Local)
-        String cloudName = System.getenv("CLOUDINARY_NAME");
-        if (cloudName == null) cloudName = dotenv.get("CLOUDINARY_NAME");
-
-        String apiKey = System.getenv("CLOUDINARY_API_KEY");
-        if (apiKey == null) apiKey = dotenv.get("CLOUDINARY_API_KEY");
-
-        String apiSecret = System.getenv("CLOUDINARY_API_SECRET");
-        if (apiSecret == null) apiSecret = dotenv.get("CLOUDINARY_API_SECRET");
-
-        // Debug (Chỉ nên dùng khi dev, xóa khi deploy thật để bảo mật)
-
-        if (cloudName == null || apiKey == null || apiSecret == null) {
-            throw new RuntimeException("Cấu hình Cloudinary bị thiếu! Hãy kiểm tra Environment Variables hoặc file .env");
-        }
+        String cloudName = resolveConfig("CLOUDINARY_NAME", dotenv);
+        String apiKey = resolveConfig("CLOUDINARY_API_KEY", dotenv);
+        String apiSecret = resolveConfig("CLOUDINARY_API_SECRET", dotenv);
 
         return new Cloudinary(ObjectUtils.asMap(
                 "cloud_name", cloudName,
                 "api_key", apiKey,
                 "api_secret", apiSecret));
+    }
+
+    private static String resolveConfig(String key, Dotenv dotenv) {
+        String value = System.getenv(key);
+
+        if (!StringUtils.hasText(value)) {
+            value = dotenv.get(key);
+        }
+
+        return value;
+    }
+
+    static final class CloudinaryCredentialsCondition implements Condition {
+        @Override
+        public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
+            Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
+
+            // Only create the Cloudinary bean when all required values are present.
+            return StringUtils.hasText(resolveConfig("CLOUDINARY_NAME", dotenv))
+                    && StringUtils.hasText(resolveConfig("CLOUDINARY_API_KEY", dotenv))
+                    && StringUtils.hasText(resolveConfig("CLOUDINARY_API_SECRET", dotenv));
+        }
     }
 }

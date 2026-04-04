@@ -111,6 +111,7 @@ public class MainController {
 
         User user = userService.findUserById(Integer.parseInt(userId));
         model.addAttribute("userName", user.getName());
+        model.addAttribute("books", bookService.pagingBook(0));
 
         return "manage";
     }
