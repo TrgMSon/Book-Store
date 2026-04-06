@@ -2,9 +2,11 @@ package com.example.bookstore.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -35,9 +37,9 @@ public class BookService {
         bookRepo.updateQtyBook(quantity, bookId);
     }
 
-    public ArrayList<Book> pagingBook(int index) {
+    public List<Book> pagingBook(int index) {
         Pageable pageable = PageRequest.of(index, 10);
-        return bookRepo.pagingBook(pageable);
+        return bookRepo.pagingBook(pageable).getContent();
     }
 
     public ArrayList<Book> getAllBook() {

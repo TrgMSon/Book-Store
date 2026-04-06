@@ -21,6 +21,9 @@ async function loadBook() {
     let res = await fetch("/api/book/pagingBook?index=" + pageIndex);
     let books = await res.json();
 
+    console.log(books);
+    console.log(pageIndex);
+
     if (books.length === 0) {
         hasMore = false;
         return;
@@ -256,7 +259,12 @@ manageBookBtn.addEventListener("click", async function () {
 
 listItem.addEventListener("scroll", async function () {
     if (listItem.scrollTop + listItem.clientHeight >= listItem.scrollHeight - 20) {
-        if (viewingBook) await loadBook();
+        console.log("hello");
+        console.log(viewingBook);
+        if (viewingBook === true) {
+            await loadBook();
+            console.log("paging");
+        }
     }
 });
 
