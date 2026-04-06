@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.example.bookstore.dto.BookDTO3;
@@ -34,7 +36,8 @@ public class BookService {
     }
 
     public ArrayList<Book> pagingBook(int index) {
-        return bookRepo.pagingBook(index);
+        Pageable pageable = PageRequest.of(index, 10);
+        return bookRepo.pagingBook(pageable);
     }
 
     public ArrayList<Book> getAllBook() {

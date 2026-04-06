@@ -3,6 +3,7 @@ package com.example.bookstore.repository;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -37,8 +38,8 @@ public interface BookRepo extends JpaRepository<Book, Integer> {
     @Query(value = "UPDATE book SET quantity = quantity - ?1 WHERE book_id = ?2", nativeQuery = true)
     void updateQtyBook(int quantity, int bookId);
 
-    @Query(value = "SELECT * FROM book ORDER BY book_id LIMIT ?1 , 10", nativeQuery = true)
-    ArrayList<Book> pagingBook(int index);
+    @Query(value = "SELECT * FROM book ORDER BY book_id", nativeQuery = true)
+    ArrayList<Book> pagingBook(Pageable index);
 
     @Transactional
     @Modifying
