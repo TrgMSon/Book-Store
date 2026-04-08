@@ -182,7 +182,7 @@ function addInvoiceToUI(invoice) {
 }
 
 manageInvoiceBtn.addEventListener("click", async function () {
-    searchFormManage.classList.add("hide");
+    searchFormManage.style.display = "none";
     viewTitle.innerText = "Quản lý hóa đơn";
 
     addBtn.classList.add("hide");
