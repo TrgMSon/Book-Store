@@ -262,7 +262,7 @@ function addBookToUI(book) {
 manageBookBtn.addEventListener("click", async function () {
     chart.style.display = "none";
     searchInputManage.value = "";
-    searchFormManage.style.display = "flex"
+    searchFormManage.style.display = "flex";
     viewTitle.innerText = "Quản lý đầu sách";
     searchInputManage.placeholder = "Tìm theo tên sách...";
     searchInputManage.value = "";
