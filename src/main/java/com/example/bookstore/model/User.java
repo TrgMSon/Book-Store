@@ -17,15 +17,11 @@ public class User {
     @Column(name="user_id", nullable=false)
     private int userId;
 
-    @Column(nullable=false)
     private String name;
 
-    @Column(nullable=false)
     private String email;
 
-    @Column(nullable=false)
     private String password;
 
-    @Column(nullable = false)
     private String role;
 }

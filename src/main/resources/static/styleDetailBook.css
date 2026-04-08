@@ -50,6 +50,7 @@
 
 #descElement {
     padding-top: 20px;
+    height: 400px;
     overflow: auto;
     overflow-y: scroll;
 }

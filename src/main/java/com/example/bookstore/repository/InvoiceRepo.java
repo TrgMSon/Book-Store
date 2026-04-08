@@ -1,5 +1,6 @@
 package com.example.bookstore.repository;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,7 +12,7 @@ import com.example.bookstore.model.InvoiceDetail;
 
 @Repository
 public interface InvoiceRepo extends JpaRepository<Invoice, Integer> {
-    @Query(value = "SELECT * FROM invoice", nativeQuery = true)
+    @Query(value = "SELECT * FROM invoice ORDER BY created_at DESC", nativeQuery = true)
     public ArrayList<Invoice> findAllInvoice();
 
     @Query(value = """
@@ -23,4 +24,10 @@ public interface InvoiceRepo extends JpaRepository<Invoice, Integer> {
 
     @Query(value = "SELECT * FROM invoice WHERE invoice_id=?1", nativeQuery = true)
     public Invoice findInvoice(int invoiceId);
+
+    @Query(value = "SELECT user_id FROM invoice WHERE invoice_id=?1", nativeQuery = true)
+    public Integer findUserIdOfInvoice(int invoiceId);
+
+    @Query(value = "SELECT SUM(total_amount) FROM invoice WHERE created_at LIKE ?1", nativeQuery = true)
+    public BigDecimal getTotalMonth(String month);
 }

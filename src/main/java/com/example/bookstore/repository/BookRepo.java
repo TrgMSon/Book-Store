@@ -44,8 +44,8 @@ public interface BookRepo extends JpaRepository<Book, Integer> {
 
     @Transactional
     @Modifying
-    @Query(value = "UPDATE book SET quantity = ?1 WHERE book_id = ?2", nativeQuery = true)
-    void addQtyBook(int quantity, int bookId);
+    @Query(value = "UPDATE book SET quantity = ?1, name = ?2, description = ?3, author = ?4, publish = ?5, price = ?6, url_img = ?7 WHERE book_id = ?8", nativeQuery = true)
+    void updateBook(int quantity, String name, String description, String author, String publish, BigDecimal price, String urlImg, int bookId);
 
     @Transactional
     @Modifying
@@ -57,4 +57,7 @@ public interface BookRepo extends JpaRepository<Book, Integer> {
     @Modifying
     @Query(value = "DELETE FROM book WHERE book_id=?1", nativeQuery = true)
     void deleteBook(int bookId);
+
+    @Query(value = "SELECT invoice_id FROM invoice_detail WHERE book_id = ?1", nativeQuery = true) 
+    Integer checkBookInInvoice(int bookId);
 }

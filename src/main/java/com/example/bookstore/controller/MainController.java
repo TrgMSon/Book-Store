@@ -26,26 +26,28 @@ public class MainController {
     @Autowired
     private BookService bookService;
 
-    @GetMapping(value = {"/login", "/"})
+    @GetMapping("/login")
     public String showLogin() {
         return "login";
     }
 
-    @PostMapping(value = {"/login", "/"})
+    @PostMapping("/login")
     public String checkLogin(@ModelAttribute User user, RedirectAttributes ra, HttpSession session) {
         String email = user.getEmail().trim();
         String password = user.getPassword();
 
-        if (email.equals("")) return "redirect:/login";
+        if (email.equals(""))
+            return "redirect:/login";
 
         User result = userService.findUserByEmail(email, password);
 
         if (result != null) {
             session.setAttribute("userId", result.getUserId() + "");
-            if (result.getRole().equals("user")) return "redirect:/home";
-            else return "redirect:/manage";
-        }
-        else {
+            if (result.getRole().equals("user"))
+                return "redirect:/home";
+            else
+                return "redirect:/manage";
+        } else {
             ra.addFlashAttribute("error", "Email hoặc mật khẩu không đúng, vui lòng thử lại.");
             return "redirect:/login";
         }
@@ -63,26 +65,24 @@ public class MainController {
             ra.addFlashAttribute("message", "Đăng ký thành công");
             userService.saveUser(user);
             return "redirect:/login";
-        }
-        else {
+        } else {
             ra.addFlashAttribute("error", "Tài khoản đã tồn tại");
             return "redirect:/signup";
         }
     }
 
-    @GetMapping("/home")
+    @GetMapping(value = { "/home", "/" })
     public String showHome(Model model, HttpSession session) {
         String userId = (String) session.getAttribute("userId");
 
-        if (userId == null) {
-            return "redirect:/login";
+        if (userId != null) {
+            User user = userService.findUserById(Integer.parseInt(userId));
+            if (user.getRole().equals("user")) model.addAttribute("userName", user.getName());
         }
-        
+        else model.addAttribute("userId", null);
+
         ArrayList<Book> books = bookService.getAllBookType("IT");
         model.addAttribute("books", books);
-
-        User user = userService.findUserById(Integer.parseInt(userId));
-        model.addAttribute("userName", user.getName());
 
         return "home";
     }
@@ -97,7 +97,7 @@ public class MainController {
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
-        return "redirect:/login";
+        return "redirect:/home";
     }
 
     @GetMapping("/manage")
@@ -109,6 +109,10 @@ public class MainController {
         }
 
         User user = userService.findUserById(Integer.parseInt(userId));
+
+        if (!user.getRole().equals("admin"))
+            return "redirect:/login";
+
         model.addAttribute("userName", user.getName());
 
         return "manage";

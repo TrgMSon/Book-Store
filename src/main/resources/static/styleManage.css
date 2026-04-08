@@ -708,11 +708,12 @@ textarea {
     gap: 12px;
     position: fixed;
     left: 50%;
-    top: 30%;
+    top: 400px;
     transform: translate(-50%, -50%);
     z-index: 10;
     padding: 28px;
     overflow: auto;
+    overflow-y: scroll;
     border: 1px solid rgba(255, 255, 255, 0.24);
     border-radius: 30px;
     background:
@@ -790,7 +791,7 @@ tr:first-child th {
 }
 
 .hide {
-    display: none !important;
+    display: none;
 }
 
 .sr-only {
@@ -889,4 +890,11 @@ tr:first-child th {
         padding: 22px;
         border-radius: 22px;
     }
+}
+
+#myChart {
+    height: 100%;
+    width: fit-content;
+    padding-bottom: 100px;
+    align-self: center;
 }

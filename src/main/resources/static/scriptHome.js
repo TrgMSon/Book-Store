@@ -13,9 +13,33 @@ const itemsInCart = document.getElementById("itemsInCart");
 const totalLabel = document.getElementById("totalLabel");
 const updateCart = document.getElementById("updateCart");
 const payBtn = document.getElementById("payBtn");
+const inforCloneDiv = document.getElementById("inforClone");
+const backdrop = document.getElementById("modal");
+const waiting = document.getElementById("waiting");
+const signupBtn = document.getElementById("signupBtn");
+const userNameP = document.getElementById("userNameP");
+const discountInform = document.getElementById("discountInform");
+
+backdrop.classList.add("hide");
+waiting.classList.add("hide");
+inforCloneDiv.classList.add("hide");
 
 let cartId = null;
 let bookType = "IT";
+let role = "user";
+let hasInfor = "no";
+
+if (userNameP.innerText === "") {
+    logoutBtn.classList.add("hide");
+    signupBtn.classList.remove("hide");
+    discountInform.innerText = "*Đăng ký tài khoản Book Store để được giảm 10% giá trị cho mọi hóa đơn.";
+    role = "clone";
+}
+else {
+    logoutBtn.classList.remove("hide");
+    signupBtn.classList.add("hide");
+    discountInform.innerText = "*Tài khoản của bạn được giảm 10% giá trị cho mọi hóa đơn.";
+}
 
 itBooks.style.backgroundColor = "#A9A9A9";
 comicBooks.style.backgroundColor = "";
@@ -67,7 +91,6 @@ itBooks.addEventListener("click", async function () {
     let response = await fetch("/api/book/getBookType?type=IT");
     let books = await response.json();
     for (let i = 0; i < books.length; i++) {
-        console.log(books[i]);
         addBookToUI(books[i]);
     }
 });
@@ -86,7 +109,6 @@ novels.addEventListener("click", async function () {
     let response = await fetch("/api/book/getBookType?type=Novel");
     let books = await response.json();
     for (let i = 0; i < books.length; i++) {
-        console.log(books[i]);
         addBookToUI(books[i]);
     }
 });
@@ -105,7 +127,6 @@ comicBooks.addEventListener("click", async function () {
     let response = await fetch("/api/book/getBookType?type=comic");
     let books = await response.json();
     for (let i = 0; i < books.length; i++) {
-        console.log(books[i]);
         addBookToUI(books[i]);
     }
 });
@@ -124,7 +145,6 @@ scienceBooks.addEventListener("click", async function () {
     let response = await fetch("/api/book/getBookType?type=Science");
     let books = await response.json();
     for (let i = 0; i < books.length; i++) {
-        console.log(books[i]);
         addBookToUI(books[i]);
     }
 });
@@ -143,7 +163,6 @@ literatureBooks.addEventListener("click", async function () {
     let response = await fetch("/api/book/getBookType?type=literature");
     let books = await response.json();
     for (let i = 0; i < books.length; i++) {
-        console.log(books[i]);
         addBookToUI(books[i]);
     }
 });
@@ -155,6 +174,8 @@ mainView.addEventListener("click", async function (e) {
     }
 
     else if (e.target.classList.contains("addToCart")) {
+        waiting.classList.remove("hide");
+
         if (cartId === null) {
             await fetch("/api/createCart", {
                 method: "POST"
@@ -162,6 +183,8 @@ mainView.addEventListener("click", async function (e) {
 
             let res = await getcartId();
             cartId = res.cartId;
+
+            role = await fetch("/api/user/getRoleUser").then(res => res.text());
         }
 
         let bookId = e.target.dataset.bookId;
@@ -170,6 +193,7 @@ mainView.addEventListener("click", async function (e) {
         let result = await res.text();
 
         if (result === "true") {
+            waiting.classList.add("hide");
             alert("Sản phẩm đang có trong giỏ hàng");
             return;
         }
@@ -185,12 +209,15 @@ mainView.addEventListener("click", async function (e) {
             })
         });
 
+        waiting.classList.add("hide");
+
         alert("Thêm thành công");
     }
 });
 
 async function getItemsInCart() {
     let items = await fetch("/api/viewCart");
+    role = await fetch("/api/user/getRoleUser").then(res => res.text());
     return items.json();
 }
 
@@ -211,7 +238,6 @@ async function addItemToUI() {
     itemsInCart.innerHTML = "";
     let total = 0;
     for (let i = 0; i < items.length; i++) {
-        console.log(items[i]);
         let itemsDiv = document.createElement("div");
         itemsDiv.classList.add("itemsDiv");
         itemsDiv.dataset.bookId = items[i].bookId;
@@ -239,19 +265,28 @@ async function addItemToUI() {
         total += items[i].quantity * items[i].price;
     }
 
+    if (role === "user") total -= total * 0.1;
+
     totalLabel.innerText = "Tổng tiền: " + formatTotal(total + "") + " VND";
 }
 
 cartBtn.addEventListener("click", async function () {
-    if (cartId != null) await addItemToUI();
-    else {
+    waiting.classList.remove("hide");
+
+    if (cartId === null) {
         await fetch("/api/createCart", {
             method: "POST"
         });
 
         let res = await getcartId();
         cartId = res.cartId;
+
+        role = await fetch("/api/user/getRoleUser").then(res => res.text());
     }
+
+    await addItemToUI();
+
+    waiting.classList.add("hide");
 
     cart.classList.toggle("hide");
 });
@@ -275,9 +310,12 @@ async function getcartId() {
 }
 
 updateCart.addEventListener("click", async function () {
+    waiting.classList.remove("hide");
+
     let items = await getItemsInCart();
 
     if (items.length === 0) {
+        waiting.classList.add("hide");
         alert("Giỏ hàng trống, vui lòng thêm sản phẩm");
         return;
     }
@@ -287,6 +325,7 @@ updateCart.addEventListener("click", async function () {
     itemsDiv.forEach(i => {
         let qty = i.querySelector(".qtyItemInput").value.trim();
         if (qty === "") {
+            waiting.classList.add("hide");
             alert("Vui lòng nhập số lượng sản phẩm");
             return;
         }
@@ -302,10 +341,12 @@ updateCart.addEventListener("click", async function () {
         body: JSON.stringify(items)
     });
 
-    alert("Cập nhật giỏ hàng thành công");
-
     items = await getItemsInCart();
     await addItemToUI();
+
+    waiting.classList.add("hide");
+
+    alert("Cập nhật giỏ hàng thành công");
 });
 
 async function deleteItemCart(bookId) {
@@ -345,14 +386,24 @@ function originalForm(total) {
 }
 
 payBtn.addEventListener("click", async function () {
+    waiting.classList.remove("hide");
+
     let items = await getItemsInCart();
 
     if (items.length === 0) {
+        waiting.classList.add("hide");
         alert("Giỏ hàng đang trống, vui lòng thêm sản phẩm");
         return;
     }
 
     let totalAmount = originalForm((totalLabel.innerText.split(" "))[2]);
+
+    if (role === "clone" && hasInfor === "no") {
+        inforCloneDiv.classList.remove("hide");
+        backdrop.classList.remove("hide");
+        waiting.classList.add("hide");
+        return;
+    }
 
     let res = await fetch("/api/payCart", {
         method: "POST",
@@ -377,6 +428,15 @@ payBtn.addEventListener("click", async function () {
         method: "POST"
     });
     cartId = null;
+
+    if (role === "clone") {
+        await fetch("/api/user/deleteCloneUser", {
+            method: "POST"
+        });
+    }
+    hasInfor = "no";
+
+    waiting.classList.add("hide");
 
     alert("Thanh toán thành công");
 

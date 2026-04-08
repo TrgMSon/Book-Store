@@ -51,6 +51,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản lý Book Store</title>
     <link rel="stylesheet" th:href="@{/styleManage.css}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -84,6 +85,7 @@
                         <div class="optionDiv">
                             <button id="manageBookBtn" class="nav-option" type="button">Đầu sách</button>
                             <button id="manageInvoiceBtn" class="nav-option" type="button">Hóa đơn</button>
+                            <button id="overView" class="nav-option" type="button">Thống kê</button>
                         </div>
                     </div>
 
@@ -102,6 +104,7 @@
                         </div>
                     </div>
 
+                    <canvas id="myChart"></canvas>
 
                     <ul class="listItem"></ul>
                 </section>

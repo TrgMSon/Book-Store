@@ -6,10 +6,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import com.example.bookstore.dto.BookDTO2;
 import com.example.bookstore.dto.BookDTO3;
 import com.example.bookstore.model.Book;
 import com.example.bookstore.repository.BookRepo;
@@ -46,8 +46,8 @@ public class BookService {
         return bookRepo.findAllBook();
     }
 
-    public void addQtyBook(int quantity, int bookId) {
-        bookRepo.addQtyBook(quantity, bookId);
+    public void updateBook(BookDTO2 book) {
+        bookRepo.updateBook(book.getQuantity(), book.getName(), book.getDescription(), book.getAuthor(), book.getPublish(), book.getPrice(), book.getUrlImg(), book.getBookId());
     }
 
     public void addBook(BookDTO3 book) {
@@ -66,5 +66,10 @@ public class BookService {
 
     public void deleteBook(int bookId) {
         bookRepo.deleteBook(bookId);
+    }
+
+    public boolean checkBookInInvoice(int bookId) {
+        Integer result = bookRepo.checkBookInInvoice(bookId);
+        return result != null;
     }
 }

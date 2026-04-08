@@ -13,7 +13,8 @@
             <form id="searchForm">
                 <input type="text" placeholder="Tìm kiếm" id="searchInput">
             </form>
-            <p th:text="${userName}"></p>
+            <p th:text="${userName}" id="userNameP"></p>
+            <button id="signupBtn">Đăng ký</button>
             <button id="cartBtn">Giỏ hàng</button>
         </div>
 
@@ -45,11 +46,33 @@
             <div class="item" id="itemsInCart">
             </div>
             <p id="totalLabel"></p>
-            <div id="btnDiv">
+            <div class="btnDiv">
                 <button id="payBtn">Thanh toán</button>
                 <button id="updateCart">Cập nhật giỏ hàng</button>
             </div>
+            <p id="discountInform"></p>
         </div>
+
+        <div class="inforCloneUser" id="inforClone">
+            <h2>Nhập thông tin khách hàng</h2>
+
+            <p>Họ và tên</p>
+            <input id="nameInput" type="text" required>
+
+            <p>Email</p>
+            <input id="mailInput" type="email" required>
+
+            <div class="btnDiv">
+                <button class="acptInforClone">Xác nhận</button>
+                <button class="goBackInforClone">Quay lại</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="backdrop" id="modal"></div>
+
+    <div class="backdrop" id="waiting">
+        <img src="https://res.cloudinary.com/dsrecf30u/image/upload/v1775634843/rajinikanth_grfrwm.gif">
     </div>
 
     <script th:src="@{/scriptHome.js}"></script>

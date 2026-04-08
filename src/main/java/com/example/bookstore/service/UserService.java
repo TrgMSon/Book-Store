@@ -30,6 +30,10 @@ public class UserService {
         else return optional.get();
     }
 
+    public void updateCloneInfor(String name, String email, int userId) {
+        userRepo.updateCloneInfor(name, email, userId);
+    }
+
     public ArrayList<CartDetailDTO> itemsInCart(int userId) {
         ArrayList<CartDetail> cartDetails = userRepo.findItemInCart(userId);
         ArrayList<CartDetailDTO> items = new ArrayList<>();
@@ -61,6 +65,11 @@ public class UserService {
         userRepo.save(user.getEmail(), user.getName(), user.getPassword(), "user");
     }
 
+    public int createCloneUser() {
+        userRepo.createCloneUser();
+        return userRepo.getCloneUserId();
+    }
+
     public boolean isItemExist(int cartId, int bookId) {
         return userRepo.isItemExist(cartId, bookId) != null;
     }
@@ -77,6 +86,10 @@ public class UserService {
         userRepo.createInvoice(userId, new BigDecimal(totalAmount), LocalDateTime.now());
     }
 
+    public void createInvoiceForClone(int userId, String cust_name, String cust_email, String totalAmount) {
+        userRepo.createInvoiceForClone(userId, cust_name, cust_email, new BigDecimal(totalAmount), LocalDateTime.now());
+    }
+
     public void addItemInvoice(int invoiceId, int bookId, int quantity, BigDecimal price) {
         userRepo.addItemInvoice(invoiceId, bookId, quantity, price);
     }
@@ -87,5 +100,9 @@ public class UserService {
 
     public void deleteInvoice(int userId) {
         userRepo.deleteInvoice(userId);
+    }
+
+    public void deleteCloneUser(int userId) {
+        userRepo.deleteCloneUser(userId);
     }
 }

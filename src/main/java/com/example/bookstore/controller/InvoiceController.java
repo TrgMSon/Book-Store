@@ -1,5 +1,7 @@
 package com.example.bookstore.controller;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,5 +28,17 @@ public class InvoiceController {
     @GetMapping("/viewInvoiceDetail")
     public InvoiceDTO2 viewInvoiceDetail(@RequestParam int invoiceId) {
         return invoiceService.findInvoiceDetail(invoiceId);
+    }
+
+    @GetMapping("/checkDiscount")
+    public String checkDiscount(@RequestParam int invoiceId) {
+        if (invoiceService.findUserIdOfInvoice(invoiceId) == null) return "noDiscount";
+        return "discount";
+    }
+    
+    @GetMapping("/getTotalYear")
+    public ArrayList<BigDecimal> getIncomes(@RequestParam String date) {
+        LocalDate target = LocalDate.of(Integer.parseInt(date), 1, 1);
+        return invoiceService.getTotalYear(target);
     }
 }

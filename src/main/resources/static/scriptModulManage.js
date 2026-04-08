@@ -1,6 +1,28 @@
 const searchInputManage = document.getElementById("searchInputManage");
 const searchFormManage = document.getElementById("searchFormManage");
 const manageInvoiceBtn = document.getElementById("manageInvoiceBtn");
+const overViewBtn = document.getElementById("overView");
+
+let ctx = null;
+let myChart = null;
+let firstTime = true;
+
+function loadChartFirst() {
+    ctx = chart.getContext('2d');
+    myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
+            datasets: [{
+                label: '',
+                data: [],
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        }
+    });
+}
 
 searchFormManage.addEventListener("submit", async function (e) {
     e.preventDefault();
@@ -9,23 +31,39 @@ searchFormManage.addEventListener("submit", async function (e) {
 
     if (target === "") return;
 
-    let response = await fetch("/api/book/searchBookManage?name=" + target);
-    let books = await response.json();
+    if (viewingBook) {
+        let response = await fetch("/api/book/searchBookManage?name=" + target);
+        let books = await response.json();
 
-    if (books.length === 0) {
-        alert("Không có kết quả phù hợp")
-        return;
+        if (books.length === 0) {
+            alert("Không có kết quả phù hợp")
+            return;
+        }
+
+        listItem.innerHTML = "";
+        for (let i = 0; i < books.length; i++) {
+            addBookToUI(books[i]);
+        }
     }
 
-    listItem.innerHTML = "";
-    for (let i = 0; i < books.length; i++) {
-        addBookToUI(books[i]);
+    else if (!viewingBook && !viewingInvoice) {
+        let date = new Date();
+        if (Number(target) > date.getFullYear()) {
+            alert("Yêu cầu không được chấp nhận");
+            return;
+        }
+
+        let incomes = await fetch("/api/manage/getTotalYear?date=" + target).then(res => res.json());
+
+        myChart.data.datasets[0].data = incomes;
+        myChart.data.datasets[0].label = 'Doanh thu năm ' + target + ' (VND)';
+        myChart.update();
     }
 });
 
 function formatDate(date) {
     let arr = date.split("T")[0].split("-");
-    return `${arr[2]}/${arr[1]}/${arr[0]}`;
+    return `${arr[2]}/${arr[1]}/${arr[0]} ${date.split("T")[1]}`;
 }
 
 async function loadDetailInvoice(invoice) {
@@ -98,6 +136,15 @@ async function loadDetailInvoice(invoice) {
     let total = document.createElement("p");
     total.innerText = "Tổng tiền: " + formatTotal(invoiceData.totalAmount + "") + " VND";
 
+    let checkDiscount = await fetch("/api/manage/checkDiscount?invoiceId=" + invoice.dataset.invoiceId).then(res => res.text());
+
+    if (checkDiscount === "discount") {
+        let note = document.createElement("p");
+        note.innerText = "*Chiết khấu 10%";
+        note.style.fontStyle = "italic";
+        inforDiv.appendChild(note);
+    }
+
     inforDiv.appendChild(detailElement);
     inforDiv.appendChild(total);
     inforDiv.appendChild(closeBtn);
@@ -135,13 +182,18 @@ function addInvoiceToUI(invoice) {
 }
 
 manageInvoiceBtn.addEventListener("click", async function () {
+    searchFormManage.classList.add("hide");
+    viewTitle.innerText = "Quản lý hóa đơn";
+
     addBtn.classList.add("hide");
+    chart.style.display = "none";
 
     viewingBook = false;
     viewingInvoice = true;
 
     manageBookBtn.style.backgroundColor = "";
     manageInvoiceBtn.style.backgroundColor = "#A9A9A9";
+    overViewBtn.style.backgroundColor = "";
 
     let response = await fetch("/api/manage/getAllInvoice");
     let invoices = await response.json();
@@ -150,4 +202,36 @@ manageInvoiceBtn.addEventListener("click", async function () {
     for (let i = 0; i < invoices.length; i++) {
         addInvoiceToUI(invoices[i]);
     }
+});
+
+overViewBtn.addEventListener("click", async function () {
+    viewTitle.innerText = "Thống kê doanh thu";
+    searchInputManage.placeholder = "Tìm theo năm...";
+    searchInputManage.value = "";
+
+    addBtn.classList.add("hide");
+
+    viewingBook = false;
+    viewingInvoice = false;
+
+    if (firstTime) {
+        loadChartFirst();
+        firstTime = false;
+    }
+
+    manageBookBtn.style.backgroundColor = "";
+    manageInvoiceBtn.style.backgroundColor = "";
+    overViewBtn.style.backgroundColor = "#A9A9A9";
+
+    listItem.innerHTML = "";
+    chart.style.display = "block";
+
+    let date = new Date();
+    let target = `${date.getFullYear()}`;
+
+    let incomes = await fetch("/api/manage/getTotalYear?date=" + target).then(res => res.json());
+
+    myChart.data.datasets[0].data = incomes;
+    myChart.data.datasets[0].label = 'Doanh thu năm ' + target + ' (VND)';
+    myChart.update();
 });

@@ -17,6 +17,7 @@ import com.example.bookstore.dto.CartDetailDTO;
 import com.example.bookstore.dto.CartDetailDTO2;
 import com.example.bookstore.dto.CartDetailDTO4;
 import com.example.bookstore.dto.CartIdDTO;
+import com.example.bookstore.model.User;
 import com.example.bookstore.service.BookService;
 import com.example.bookstore.service.UserService;
 
@@ -33,15 +34,31 @@ public class CartController {
 
     @GetMapping("/viewCart")
     public ArrayList<CartDetailDTO> viewCart(HttpSession session) {
-        int userId = Integer.parseInt((String) session.getAttribute("userId"));
+        String tmp = (String) session.getAttribute("userId");
+        int userId = 0;
+        
+        if (tmp == null) {
+            userId = userService.createCloneUser();
+            session.setAttribute("userId", userId+"");
+        }
+        else userId = Integer.parseInt(tmp);
+
         return userService.itemsInCart(userId);
     }
 
     @PostMapping("/createCart")
     public void createCart(HttpSession session) {
-        int userId = Integer.parseInt((String) session.getAttribute("userId"));
+        String tmp = (String) session.getAttribute("userId");
+        int userId = 0;
+        
+        if (tmp == null) {
+            userId = userService.createCloneUser();
+            session.setAttribute("userId", userId+"");
+        }
+        else userId = Integer.parseInt(tmp);
 
         if (userService.findCart(userId) == null) {
+            System.out.println(userId + " NULLLL");
             userService.createCart(userId, LocalDateTime.now());
         }
     }
@@ -66,7 +83,15 @@ public class CartController {
 
     @GetMapping("/findCart")
     public CartIdDTO findCart(HttpSession session) {
-        int userId = Integer.parseInt((String) session.getAttribute("userId"));
+        String tmp = (String) session.getAttribute("userId");
+        int userId = 0;
+        
+        if (tmp == null) {
+            userId = userService.createCloneUser();
+            session.setAttribute("userId", userId+"");
+        }
+        else userId = Integer.parseInt(tmp);
+
         return new CartIdDTO(userService.findCart(userId).getCartId());
     }
 
@@ -85,7 +110,15 @@ public class CartController {
     @PostMapping("/payCart")
     public CartDetailDTO4 payCart(@RequestBody CartDTO cart, HttpSession session) {
         int userId = Integer.parseInt((String) session.getAttribute("userId"));
-        userService.createInvoice(userId, cart.getTotalAmount());
+        
+        User user = userService.findUserById(userId);
+        if (user.getRole().equals("clone")) {
+            userService.createInvoiceForClone(userId, user.getName(), user.getEmail(), cart.getTotalAmount());
+        }
+        else {
+            userService.createInvoice(userId, cart.getTotalAmount());
+        }
+
         int invoiceId = userService.findInvoiceId(userId);
 
         CartDetailDTO4 ans = new CartDetailDTO4();

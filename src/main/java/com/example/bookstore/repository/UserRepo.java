@@ -76,6 +76,11 @@ public interface UserRepo extends JpaRepository<User, Integer> {
 
         @Transactional
         @Modifying
+        @Query(value = "INSERT INTO invoice(user_id, cust_name, cust_email, total_amount, created_at) VALUES(?1, ?2, ?3, ?4, ?5)", nativeQuery = true)
+        void createInvoiceForClone(int userId, String cust_name, String cust_email, BigDecimal totalAmount, LocalDateTime createdAt);
+
+        @Transactional
+        @Modifying
         @Query(value = "INSERT INTO invoice_detail(invoice_id, book_id, quantity, price) VALUES(?1, ?2, ?3, ?4)", nativeQuery = true)
         void addItemInvoice(int invoiceId, int bookId, int quantity, BigDecimal price);
 
@@ -90,4 +95,22 @@ public interface UserRepo extends JpaRepository<User, Integer> {
         @Modifying
         @Query(value = "DELETE FROM invoice WHERE user_id=?1 ORDER BY created_at DESC LIMIT 1", nativeQuery = true)
         void deleteInvoice(int userId);
+
+        @Transactional
+        @Modifying
+        @Query(value = "INSERT INTO user(role) VALUES('clone')", nativeQuery = true)
+        void createCloneUser();
+
+        @Query(value = "SELECT user_id FROM user WHERE role = 'clone' ORDER BY user_id DESC LIMIT 0, 1", nativeQuery = true)
+        int getCloneUserId();
+
+        @Transactional
+        @Modifying
+        @Query(value = "UPDATE user SET name = ?1, email = ?2 WHERE user_id = ?3", nativeQuery = true)
+        void updateCloneInfor(String name, String email, int userId);
+
+        @Transactional
+        @Modifying
+        @Query(value = "DELETE FROM user WHERE user_id = ?1", nativeQuery = true)
+        void deleteCloneUser(int userId);
 }

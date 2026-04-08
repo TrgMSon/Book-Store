@@ -32,4 +32,10 @@ public class Invoice {
 
     @Column(name="created_at", nullable = false)
     private LocalDateTime createdAt;
+
+    @Column(name="cust_name")
+    private String customerName;
+
+    @Column(name="cust_email")
+    private String customerEmail;
 }

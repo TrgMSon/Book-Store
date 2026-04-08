@@ -25,7 +25,53 @@ searchForm.addEventListener("submit", async function (e) {
     mainView.innerHTML = "";
 
     for (let i = 0; i < books.length; i++) {
-        console.log(books[i]);
         addBookToUI(books[i]);
     }
+});
+
+inforCloneDiv.addEventListener("click", async function (e) {
+    let nameInput = document.getElementById("nameInput");
+    let mailInput = document.getElementById("mailInput");
+
+    if (e.target.classList.contains("goBackInforClone")) {
+        nameInput.value = "";
+        mailInput.value = "";
+        inforCloneDiv.classList.add("hide");
+        backdrop.classList.add("hide");
+    }
+
+    else if (e.target.classList.contains("acptInforClone")) {
+        let name = nameInput.value.trim();
+        let email = mailInput.value.trim();
+
+        if (name === "" || email === "") {
+            alert("Vui lòng nhập đủ thông tin");
+            return;
+        }
+
+        await fetch("/api/user/updateCloneInfor", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name: name,
+                email: email
+            })
+        });
+
+        hasInfor = "yes";
+
+        alert("Lưu thông tin thành công");
+
+        nameInput.value = "";
+        mailInput.value = "";
+
+        inforCloneDiv.classList.add("hide");
+        backdrop.classList.add("hide");
+    }
+});
+
+signupBtn.addEventListener("click", function () {
+    window.location.href = "/signup";
 });

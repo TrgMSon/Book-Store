@@ -1,5 +1,8 @@
 package com.example.bookstore.service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,25 +27,50 @@ public class InvoiceService {
         for (Invoice invoice : invoices) {
             invoiceDTOs.add(new InvoiceDTO(invoice.getInvoiceId(), invoice.getCreatedAt()));
         }
-        
+
         return invoiceDTOs;
     }
 
     public InvoiceDTO2 findInvoiceDetail(int invoiceId) {
         InvoiceDTO2 invoiceDTO2 = new InvoiceDTO2();
-        
+
         Invoice invoice = invoiceRepo.findInvoice(invoiceId);
-        invoiceDTO2.setUserName(invoice.getUser().getName());
-        invoiceDTO2.setEmail(invoice.getUser().getEmail());
+        if (invoice.getUser() == null) {
+            invoiceDTO2.setUserName(invoice.getCustomerName());
+            invoiceDTO2.setEmail(invoice.getCustomerEmail());
+        } else {
+            invoiceDTO2.setUserName(invoice.getUser().getName());
+            invoiceDTO2.setEmail(invoice.getUser().getEmail());
+        }
+
         invoiceDTO2.setTotalAmount(invoice.getTotalAmount());
 
         ArrayList<InvoiceDetail> invoiceDetails = invoiceRepo.findInvoiceDetails(invoiceId);
         ArrayList<InvoiceDetailDTO> invoiceDetailDTOs = new ArrayList<>();
         for (InvoiceDetail invoiceDetail : invoiceDetails) {
-            invoiceDetailDTOs.add(new InvoiceDetailDTO(invoiceDetail.getBook().getName(), invoiceDetail.getQuantity(), invoiceDetail.getPrice()));
+            invoiceDetailDTOs.add(new InvoiceDetailDTO(invoiceDetail.getBook().getName(), invoiceDetail.getQuantity(),
+                    invoiceDetail.getPrice()));
         }
         invoiceDTO2.setInvoiceDetails(invoiceDetailDTOs);
 
         return invoiceDTO2;
+    }
+
+    public Integer findUserIdOfInvoice(int invoiceId) {
+        return invoiceRepo.findUserIdOfInvoice(invoiceId);
+    }
+
+    public ArrayList<BigDecimal> getTotalYear(LocalDate target) {
+        ArrayList<BigDecimal> listIncome = new ArrayList<>();
+
+        for (int i = 1; i <= 12; i++) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
+            String date = target.format(formatter);
+            System.out.println(date);
+            listIncome.add(invoiceRepo.getTotalMonth("%" + date + "%"));
+            target = target.plusMonths(1);
+        }
+
+        return listIncome;
     }
 }

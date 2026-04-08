@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,9 +51,9 @@ public class BookController {
         return bookService.findBookById(bookId);
     }
 
-    @PostMapping("/addQtyBook")
-    public void addQtyBook(@RequestBody BookDTO2 bookDTO2) {
-        bookService.addQtyBook(bookDTO2.getQuantity(), bookDTO2.getBookId());
+    @PostMapping("/updateBook")
+    public void updateBook(@RequestBody BookDTO2 bookDTO2) {
+        bookService.updateBook(bookDTO2);
     }
 
     @PostMapping("/upload-image")
@@ -82,4 +81,9 @@ public class BookController {
     public void deleteBook(@RequestBody BookDTO4 bookDTO4) {
         bookService.deleteBook(bookDTO4.getBookId());
     } 
+
+    @GetMapping("/checkBookInInvoice")
+    public boolean checkBookInInvoice(@RequestParam int bookId) {
+        return bookService.checkBookInInvoice(bookId);
+    }
 }
