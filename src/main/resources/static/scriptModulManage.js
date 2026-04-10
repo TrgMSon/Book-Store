@@ -206,6 +206,7 @@ manageInvoiceBtn.addEventListener("click", async function () {
 
 overViewBtn.addEventListener("click", async function () {
     viewTitle.innerText = "Thống kê doanh thu";
+    searchFormManage.style.display = "flex";
     searchInputManage.placeholder = "Tìm theo năm...";
     searchInputManage.value = "";
 
