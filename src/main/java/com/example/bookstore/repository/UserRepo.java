@@ -23,7 +23,7 @@ public interface UserRepo extends JpaRepository<User, Integer> {
         @Query(value = """
                         SELECT * FROM user WHERE email=?1 AND password=?2
                         """, nativeQuery = true)
-        User findByEmail(String email, String password);
+        User findByEmailAndPassword(String email, String password);
 
         @Query(value = """
                            SELECT cd.* FROM cart_detail AS cd

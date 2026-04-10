@@ -60,10 +60,9 @@ public class MainController {
 
     @PostMapping("/signup")
     public String doSignup(@ModelAttribute User user, RedirectAttributes ra) {
-        User tmp = userService.findUserByEmail(user.getEmail(), user.getPassword());
-        if (tmp == null) {
-            ra.addFlashAttribute("message", "Đăng ký thành công");
+        if (!userService.checkUserExist(user.getEmail())) {
             userService.saveUser(user);
+            ra.addFlashAttribute("message", "Đăng ký thành công");
             return "redirect:/login";
         } else {
             ra.addFlashAttribute("error", "Tài khoản đã tồn tại");

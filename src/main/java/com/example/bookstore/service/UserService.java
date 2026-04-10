@@ -20,16 +20,21 @@ public class UserService {
     private UserRepo userRepo;
 
     public User findUserByEmail(String email, String password) {
-        if (userRepo.findByEmail(email) == null) return null;
-
-        User result = userRepo.findByEmail(email, password);
+        User result = userRepo.findByEmailAndPassword(email, password);
         return result;
+    }
+
+    public boolean checkUserExist(String email) {
+        User result = userRepo.findByEmail(email);
+        return result != null;
     }
 
     public User findUserById(int userId) {
         Optional<User> optional = userRepo.findById(userId);
-        if (optional.isEmpty()) return null;
-        else return optional.get();
+        if (optional.isEmpty())
+            return null;
+        else
+            return optional.get();
     }
 
     public void updateCloneInfor(String name, String email, int userId) {
@@ -41,7 +46,8 @@ public class UserService {
         ArrayList<CartDetailDTO> items = new ArrayList<>();
 
         for (CartDetail i : cartDetails) {
-            items.add(new CartDetailDTO(i.getCart().getCartId(), i.getBook().getBookId(), i.getQuantity(), i.getBook().getName(), i.getBook().getPrice()));
+            items.add(new CartDetailDTO(i.getCart().getCartId(), i.getBook().getBookId(), i.getQuantity(),
+                    i.getBook().getName(), i.getBook().getPrice()));
         }
 
         return items;
