@@ -20,6 +20,8 @@ public class UserService {
     private UserRepo userRepo;
 
     public User findUserByEmail(String email, String password) {
+        if (userRepo.findByEmail(email) == null) return null;
+
         User result = userRepo.findByEmail(email, password);
         return result;
     }
