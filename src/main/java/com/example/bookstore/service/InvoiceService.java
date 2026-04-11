@@ -60,17 +60,21 @@ public class InvoiceService {
         return invoiceRepo.findUserIdOfInvoice(invoiceId);
     }
 
-    public ArrayList<BigDecimal> getTotalYear(LocalDate target) {
+    public ArrayList<BigDecimal> getTotalMonth(LocalDate target) {
         ArrayList<BigDecimal> listIncome = new ArrayList<>();
 
         for (int i = 1; i <= 12; i++) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
             String date = target.format(formatter);
             System.out.println(date);
-            listIncome.add(invoiceRepo.getTotalMonth("%" + date + "%"));
+            listIncome.add(invoiceRepo.getTotal("%" + date + "%"));
             target = target.plusMonths(1);
         }
 
         return listIncome;
+    }
+
+    public BigDecimal getTotalYear(String date) {
+        return invoiceRepo.getTotal("%" + date + "%");
     }
 }

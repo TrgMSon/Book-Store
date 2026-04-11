@@ -36,9 +36,14 @@ public class InvoiceController {
         return "discount";
     }
     
-    @GetMapping("/getTotalYear")
+    @GetMapping("/getTotalMonth")
     public ArrayList<BigDecimal> getIncomes(@RequestParam String date) {
         LocalDate target = LocalDate.of(Integer.parseInt(date), 1, 1);
-        return invoiceService.getTotalYear(target);
+        return invoiceService.getTotalMonth(target);
+    }
+
+    @GetMapping("/getTotalYear")
+    public BigDecimal getTotalYear(@RequestParam String date) {
+        return invoiceService.getTotalYear(date);
     }
 }

@@ -371,7 +371,7 @@ textarea {
     justify-content: space-between;
     align-items: flex-end;
     gap: 20px;
-    padding: 28px 30px 24px;
+    padding: 28px 30px 12px;
     background:
         radial-gradient(circle at top right, rgba(255, 179, 71, 0.22), transparent 25%),
         linear-gradient(135deg, rgba(255, 240, 231, 0.96) 0%, rgba(255, 248, 241, 1) 48%, rgba(241, 255, 252, 0.96) 100%);
@@ -379,7 +379,8 @@ textarea {
 }
 
 .content-copy {
-    max-width: 720px;
+    display: flex;
+    max-width: 880px;
 }
 
 .content-copy h1 {
@@ -388,6 +389,11 @@ textarea {
     font-size: clamp(2rem, 2.6vw, 3rem);
     line-height: 1.08;
     color: #1f2331;
+}
+
+.totalElement {
+    margin-left: 120px;
+    font-size: 18px;
 }
 
 .optionBtn {

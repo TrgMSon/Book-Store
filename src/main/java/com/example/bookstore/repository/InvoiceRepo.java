@@ -30,4 +30,7 @@ public interface InvoiceRepo extends JpaRepository<Invoice, Integer> {
 
     @Query(value = "SELECT SUM(total_amount) FROM invoice WHERE created_at LIKE ?1", nativeQuery = true)
     public BigDecimal getTotalMonth(String month);
+
+    @Query(value = "SELECT SUM(total_amount) FROM invoice WHERE created_at LIKE ?1", nativeQuery = true)
+    public BigDecimal getTotal(String month);
 }

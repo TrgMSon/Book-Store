@@ -53,7 +53,11 @@ searchFormManage.addEventListener("submit", async function (e) {
             return;
         }
 
-        let incomes = await fetch("/api/manage/getTotalYear?date=" + target).then(res => res.json());
+        let totalIncome = await fetch("/api/manage/getTotalYear?date=" + target).then(res => res.text());
+        totalElement.innerText = "Doanh thu: " + formatTotal(totalIncome) + " VND";
+        totalElement.style.display = "block";
+
+        let incomes = await fetch("/api/manage/getTotalMonth?date=" + target).then(res => res.json());
 
         myChart.data.datasets[0].data = incomes;
         myChart.data.datasets[0].label = 'Doanh thu năm ' + target + ' (VND)';
@@ -187,6 +191,7 @@ manageInvoiceBtn.addEventListener("click", async function () {
 
     addBtn.classList.add("hide");
     chart.style.display = "none";
+    totalElement.style.display = "none";
 
     viewingBook = false;
     viewingInvoice = true;
@@ -210,6 +215,13 @@ overViewBtn.addEventListener("click", async function () {
     searchInputManage.placeholder = "Tìm theo năm...";
     searchInputManage.value = "";
 
+    let date = new Date();
+    let target = `${date.getFullYear()}`;
+
+    let totalIncome = await fetch("/api/manage/getTotalYear?date=" + target).then(res => res.text());
+    totalElement.innerText = "Doanh thu: " + formatTotal(totalIncome) + " VND";
+    totalElement.style.display = "block";
+
     addBtn.classList.add("hide");
 
     viewingBook = false;
@@ -227,10 +239,7 @@ overViewBtn.addEventListener("click", async function () {
     listItem.innerHTML = "";
     chart.style.display = "block";
 
-    let date = new Date();
-    let target = `${date.getFullYear()}`;
-
-    let incomes = await fetch("/api/manage/getTotalYear?date=" + target).then(res => res.json());
+    let incomes = await fetch("/api/manage/getTotalMonth?date=" + target).then(res => res.json());
 
     myChart.data.datasets[0].data = incomes;
     myChart.data.datasets[0].label = 'Doanh thu năm ' + target + ' (VND)';

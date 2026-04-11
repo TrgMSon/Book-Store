@@ -6,8 +6,11 @@ const addBtn = document.getElementById("addBtn");
 const mainview2 = document.querySelector(".main-view2");
 const viewTitle = document.getElementById("viewTitle");
 const chart = document.getElementById("myChart");
+const contentHeader = document.querySelector(".content-copy");
+const totalElement = document.querySelector(".totalElement");
 
 chart.style.display = "none";
+totalElement.style.display = "none";
 
 let isLoading = false;
 let hasMore = true;
@@ -261,6 +264,7 @@ function addBookToUI(book) {
 
 manageBookBtn.addEventListener("click", async function () {
     chart.style.display = "none";
+    totalElement.style.display = "none";
     searchInputManage.value = "";
     searchFormManage.style.display = "flex";
     viewTitle.innerText = "Quản lý đầu sách";
