@@ -371,11 +371,11 @@ itemsInCart.addEventListener("click", async function (e) {
     }
 });
 
-async function markItem(bookIds) {
+function markItem(bookIds) {
     let itemsDivs = document.querySelectorAll(".itemsDiv");
     itemsDivs.forEach(itemsDiv => {
         if (bookIds.includes(itemsDiv.dataset.bookId)) {
-            itemsDiv.style.backgroundColor = "#A9A9A9";
+            itemsDiv.style.backgroundColor = "coral";
         }
     });
 }
@@ -420,6 +420,7 @@ payBtn.addEventListener("click", async function () {
 
     if (mess.result === "false") {
         alert("Không đủ sản phẩm");
+        waiting.classList.add("hide");
         markItem(mess.bookIds);
         return;
     }

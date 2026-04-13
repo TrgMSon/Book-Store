@@ -122,10 +122,10 @@ public class CartController {
         int invoiceId = userService.findInvoiceId(userId);
 
         CartDetailDTO4 ans = new CartDetailDTO4();
-        ArrayList<Integer> bookIds = new ArrayList<>();
+        ArrayList<String> bookIds = new ArrayList<>();
         for (CartDetailDTO cartDetail : cart.getCartDetail()) {
             if (!bookService.isInStock(cartDetail.getBookId(), cartDetail.getQuantity())) {
-                bookIds.add(cartDetail.getBookId());
+                bookIds.add(cartDetail.getBookId() + "");
             }
         }
 

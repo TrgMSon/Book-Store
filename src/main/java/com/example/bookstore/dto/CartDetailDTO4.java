@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CartDetailDTO4 {
     private String result;
-    private ArrayList<Integer> bookIds;
+    private ArrayList<String> bookIds;
 }
