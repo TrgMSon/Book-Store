@@ -18,7 +18,7 @@ import com.example.bookstore.model.CartDetail;
 
 @Repository
 public interface UserRepo extends JpaRepository<User, Integer> {
-        User findByEmail(String email);
+        ArrayList<User> findByEmail(String email);
 
         @Query(value = """
                         SELECT * FROM user WHERE email=?1 AND password=?2

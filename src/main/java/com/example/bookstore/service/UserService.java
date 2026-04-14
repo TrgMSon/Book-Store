@@ -25,7 +25,7 @@ public class UserService {
     }
 
     public boolean checkUserExist(String email) {
-        User result = userRepo.findByEmail(email);
+        ArrayList<User> result = userRepo.findByEmail(email);
         return result != null;
     }
 
