@@ -8,7 +8,9 @@ const viewTitle = document.getElementById("viewTitle");
 const chart = document.getElementById("myChart");
 const contentHeader = document.querySelector(".content-copy");
 const totalElement = document.querySelector(".totalElement");
+const waiting = document.getElementById("waiting");
 
+waiting.classList.add("hide");
 chart.style.display = "none";
 totalElement.style.display = "none";
 
@@ -276,8 +278,6 @@ manageBookBtn.addEventListener("click", async function () {
     viewingBook = true;
     viewingInvoice = false;
 
-    console.log("book");
-
     listItem.innerHTML = "";
 
     manageBookBtn.style.backgroundColor = "#A9A9A9";
@@ -345,6 +345,8 @@ mainView.addEventListener("click", async function (e) {
         updateBtn.innerText = "Cập nhật";
         updateBtn.classList.add("updateBtn");
         updateBtn.addEventListener("click", async function () {
+            waiting.classList.remove("hide");
+
             let name = nameInput.value.trim();
             let author = authorInput.value.trim();
             let description = descInput.value.trim();
@@ -355,36 +357,42 @@ mainView.addEventListener("click", async function (e) {
 
             if (name === "") {
                 nameInput.focus();
+                waiting.classList.add("hide");
                 alert("Vui lòng nhập đủ thông tin");
                 return;
             }
 
             if (author === "") {
                 authorInput.focus();
+                waiting.classList.add("hide");
                 alert("Vui lòng nhập đủ thông tin");
                 return;
             }
 
             if (publish === "") {
                 publishInput.focus();
+                waiting.classList.add("hide");
                 alert("Vui lòng nhập đủ thông tin");
                 return;
             }
 
             if (description === "") {
                 descInput.focus();
+                waiting.classList.add("hide");
                 alert("Vui lòng nhập đủ thông tin");
                 return;
             }
 
             if (price === "") {
                 priceInput.focus();
+                waiting.classList.add("hide");
                 alert("Vui lòng nhập đủ thông tin");
                 return;
             }
 
             if (quantity === "") {
                 qtyInput.focus();
+                waiting.classList.add("hide");
                 alert("Vui lòng nhập đủ thông tin");
                 return;
             }
@@ -410,16 +418,16 @@ mainView.addEventListener("click", async function (e) {
             else {
                 let formData = new FormData();
                 let image = files[0];
+                if (image.size > 20 * 1024 * 1024) {
+                    alert("Ảnh gửi lên quá 20MB, vui lòng thử lại");
+                    return;
+                }
+
                 formData.append("image", image);
                 let response = await fetch("/api/book/upload-image", {
                     method: "POST",
                     body: formData
                 });
-
-                if (!response.ok) {
-                    alert("Ảnh gửi lên quá 20MB, vui lòng thử lại");
-                    return;
-                }
 
                 let urlImg = await response.text();
 
@@ -441,6 +449,7 @@ mainView.addEventListener("click", async function (e) {
                 });
             }
 
+            waiting.classList.add("hide");
             alert("Cập nhật thành công");
 
             let inforDiv = document.querySelector(".infor-div");
@@ -451,6 +460,8 @@ mainView.addEventListener("click", async function (e) {
     }
 
     else if (e.target.classList.contains("acptBtn")) {
+        waiting.classList.remove("hide");
+
         let bookName = document.querySelector("#bookName");
         let author = document.querySelector("#author");
         let publish = document.querySelector("#publish");
@@ -459,39 +470,53 @@ mainView.addEventListener("click", async function (e) {
         let price = document.querySelector("#price");
         let qty = document.querySelector("#qty");
         let imgInput = document.querySelector("#imgInput");
+        let isError = false;
 
         if (bookName.value.trim() === "") {
             bookName.focus();
+            isError = true;
             return;
         }
 
         if (author.value.trim() === "") {
             author.focus();
+            isError = true;
             return;
         }
 
         if (publish.value.trim() === "") {
             publish.focus();
+            isError = true;
             return;
         }
 
         if (type.value.trim() === "") {
             type.focus();
+            isError = true;
             return;
         }
 
         if (desc.value.trim() === "") {
             desc.focus();
+            isError = true;
             return;
         }
 
         if (price.value.trim() === "") {
             price.focus();
+            isError = true;
             return;
         }
 
         if (qty.value.trim() === "") {
             qty.focus();
+            isError = true;
+            return;
+        }
+
+        if (isError) {
+            waiting.classList.add("hide");
+            alert("Vui lòng nhập đủ thông tin");
             return;
         }
 
@@ -499,15 +524,17 @@ mainView.addEventListener("click", async function (e) {
             let formData = new FormData();
             let image = imgInput.files[0];
             formData.append("image", image);
+
+            if (image.size > 20 * 1024 * 1024) {
+                waiting.classList.add("hide");
+                alert("Ảnh gửi lên quá 20MB, vui lòng thử lại");
+                return;
+            }
+
             let response = await fetch("/api/book/upload-image", {
                 method: "POST",
                 body: formData
             });
-
-            if (!response.ok) {
-                alert("Ảnh gửi lên quá 20MB, vui lòng thử lại");
-                return;
-            }
 
             let urlImg = await response.text();
 
@@ -530,13 +557,18 @@ mainView.addEventListener("click", async function (e) {
                 body: JSON.stringify(bookData)
             });
 
+            waiting.classList.add("hide");
             alert("Thêm đầu sách thành công");
 
             let inforDiv = document.querySelector(".infor-div");
             mainView.removeChild(inforDiv);
         }
 
-        else imgInput.focus();
+        else {
+            imgInput.focus();
+            waiting.classList.add("hide");
+            alert("Vui lòng nhập đủ thông tin");
+        }
     }
 
     else if (e.target.classList.contains("delBtn")) {

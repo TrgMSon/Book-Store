@@ -58,7 +58,6 @@ public class CartController {
         else userId = Integer.parseInt(tmp);
 
         if (userService.findCart(userId) == null) {
-            System.out.println(userId + " NULLLL");
             userService.createCart(userId, LocalDateTime.now());
         }
     }
